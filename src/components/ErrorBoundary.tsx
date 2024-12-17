@@ -52,10 +52,7 @@ export const ErrorBoundaryFallbackComponent: React.FC<
 > = () => (
   <main style={LayoutStyle}>
     <section style={MessageStyle}>
-      Something Error Ooccurring
-      <span style={{ paddingLeft: 3 }} role="img" aria-label="face-emoji">
-        😞
-      </span>
+      An error occurred!
     </section>
   </main>
 )

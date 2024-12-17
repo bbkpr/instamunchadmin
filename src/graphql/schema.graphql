@@ -1,0 +1,380 @@
+# Base interface for all mutation responses providing consistent error handling
+interface MutationResponse {
+    "HTTP-style response code"
+    code: String!
+    "Operation success indicator"
+    success: Boolean!
+    "Human-readable status message"
+    message: String!
+}
+
+type Item {
+    id: ID!
+    "Name of the item"
+    name: String!
+    "Default price if no specific pricing policy exists"
+    basePrice: Float
+    "Expected shelf life, in days, of newly purchased items"
+    expirationPeriod: Int
+    createdAt: String
+    updatedAt: String
+    machineItems: [MachineItem]
+}
+
+type MachineItem {
+    id: ID!
+    "Optional override for item name in specific machine"
+    name: String
+    quantity: Int!
+    machineId: ID!
+    machine: Machine
+    itemId: ID!
+    item: Item
+}
+
+type MachineManufacturer {
+    id: ID!
+    name: String!
+    createdAt: String!
+    updatedAt: String!
+    machines: [Machine]
+}
+
+type MachineType {
+    id: ID!
+    name: String!
+    createdAt: String!
+    updatedAt: String!
+    machines: [Machine]
+}
+
+type Machine {
+    id: ID!
+    name: String!
+    machineItems: [MachineItem]
+    machineLocations: [MachineLocation]
+    machineType: MachineType
+    manufacturer: MachineManufacturer
+    createdAt: String
+    updatedAt: String
+}
+
+type Location {
+    id: ID!
+    address1: String!
+    address2: String
+    city: String!
+    stateOrProvince: String!
+    country: String!
+    createdAt: String!
+    updatedAt: String!
+    machineLocations: [MachineLocation]
+}
+
+type MachineLocation {
+    id: ID!
+    "Optional display name for this machine-location pairing"
+    name: String
+    machineId: ID!
+    machine: Machine
+    locationId: ID!
+    location: Location
+    createdAt: String!
+    updatedAt: String!
+}
+
+type Query {
+    "Get all Items, from everywhere"
+    getItems: [Item]
+    "Get Items in a specific Machine"
+    getItemsByMachine(machineId: ID!): [MachineItem!]
+    "Get all Locations, from everywhere"
+    getLocations: [Location]
+    "Get Locations stocking a specific Item"
+    getLocationsByItem(itemId: ID!): [Location!]
+    "Get Locations with a Machine matching a name (case insensitive)"
+    getLocationsByMachineName(machineName: String!): [Location!]!
+    "Get all Machines, from everywhere"
+    getMachines: [Machine]
+    "Get a MachineManufacturer by ID"
+    getMachineManufacturer(id: ID!): MachineManufacturer
+    "Get all MachineManufacturers"
+    getMachineManufacturers: [MachineManufacturer!]!
+    "Get a MachineType by ID"
+    getMachineType(id: ID!): MachineType
+    "Get all MachineTypes"
+    getMachineTypes: [MachineType!]!
+    "Get all Machines stocking a specific Item"
+    getMachinesByItem(itemId: ID!): [MachineItem!]
+    "Get Machines at a specific Location"
+    getMachinesByLocation(locationId: ID!): [Machine!]
+    "Get all MachineItems, from everywhere"
+    getMachineItems: [MachineItem]
+}
+
+#
+# Mutation
+#
+
+input CreateItemInput {
+    name: String!
+    basePrice: Float
+    expirationPeriod: Int
+}
+
+input UpdateItemInput {
+    id: ID!
+    name: String
+    basePrice: Float
+    expirationPeriod: Int
+}
+
+input CreateMachineInput {
+    name: String!
+    machineTypeId: ID!
+    manufacturerId: ID!
+}
+
+input UpdateMachineInput {
+    id: ID!
+    name: String
+    machineTypeId: ID
+    manufacturerId: ID
+}
+
+input CreateLocationInput {
+    address1: String!
+    address2: String
+    city: String!
+    stateOrProvince: String!
+    country: String!
+}
+
+input UpdateLocationInput {
+    id: ID!
+    address1: String
+    address2: String
+    city: String
+    stateOrProvince: String
+    country: String
+}
+
+input CreateMachineLocationInput {
+    name: String!
+    machineId: ID!
+    locationId: ID!
+}
+
+input UpdateMachineLocationInput {
+    id: ID!
+    name: String
+    machineId: ID
+    locationId: ID
+}
+
+input CreateMachineItemInput {
+    machineId: ID!
+    itemId: ID!
+    name: String
+    quantity: Int!
+}
+
+input CreateMachineManufacturerInput {
+    name: String!
+}
+
+input UpdateMachineManufacturerInput {
+    id: ID!
+    name: String
+}
+
+input CreateMachineTypeInput {
+    name: String!
+}
+
+input UpdateMachineTypeInput {
+    id: ID!
+    name: String
+}
+
+type CreateItemMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    item: Item
+}
+
+type UpdateItemMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    item: Item
+}
+
+type DeleteItemMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+}
+
+type CreateMachineMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    machine: Machine
+}
+
+type UpdateMachineMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    machine: Machine
+}
+
+type DeleteMachineMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+}
+
+type CreateLocationMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    location: Location
+}
+
+type UpdateLocationMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    location: Location
+}
+
+type DeleteLocationMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+}
+
+type CreateMachineItemMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    machineItem: MachineItem
+}
+
+type DeleteMachineItemMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+}
+
+type UpdateMachineItemsMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    machineItems: [MachineItem]
+}
+
+type CreateMachineLocationMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    machineLocation: MachineLocation
+}
+
+type UpdateMachineLocationMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    machineLocation: MachineLocation
+}
+
+type DeleteMachineLocationMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+}
+
+type CreateMachineManufacturerMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    manufacturer: MachineManufacturer
+}
+
+type UpdateMachineManufacturerMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    manufacturer: MachineManufacturer
+}
+
+type DeleteMachineManufacturerMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+}
+
+type CreateMachineTypeMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    machineType: MachineType
+}
+
+type UpdateMachineTypeMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+    machineType: MachineType
+}
+
+type DeleteMachineTypeMutationResponse implements MutationResponse {
+    code: String!
+    success: Boolean!
+    message: String!
+}
+
+# Update and overwrite ALL Items in the Machine
+input UpdateMachineItemsInput {
+    machineId: ID!
+    itemIds: [ID!]!
+}
+
+type Mutation {
+    createItem(input: CreateItemInput!): CreateItemMutationResponse!
+    updateItem(input: UpdateItemInput!): UpdateItemMutationResponse!
+    deleteItem(id: ID!): DeleteItemMutationResponse!
+
+    createMachine(input: CreateMachineInput!): CreateMachineMutationResponse!
+    updateMachine(input: UpdateMachineInput!): CreateMachineMutationResponse!
+    deleteMachine(id: ID!): DeleteMachineMutationResponse!
+
+    createMachineItem(input: CreateMachineItemInput!): CreateMachineItemMutationResponse!
+    updateMachineItems(input: UpdateMachineItemsInput!): UpdateMachineItemsMutationResponse!
+    deleteMachineItem(id: ID!): DeleteMachineItemMutationResponse!
+
+    "Assign a Machine to a Location"
+    createMachineLocation(input: CreateMachineLocationInput!): CreateMachineLocationMutationResponse!
+    "Update a MachineLocation relation"
+    updateMachineLocation(input: UpdateMachineLocationInput!): UpdateMachineLocationMutationResponse!
+    "Delete a MachineLocation relation"
+    deleteMachineLocation(id: ID!): DeleteMachineLocationMutationResponse!
+
+    createMachineManufacturer(input: CreateMachineManufacturerInput!): CreateMachineManufacturerMutationResponse!
+    updateMachineManufacturer(input: UpdateMachineManufacturerInput!): UpdateMachineManufacturerMutationResponse!
+    deleteMachineManufacturer(id: ID!): DeleteMachineManufacturerMutationResponse!
+
+    createLocation(input: CreateLocationInput!): CreateLocationMutationResponse!
+    updateLocation(input: UpdateLocationInput!): UpdateLocationMutationResponse!
+    deleteLocation(id: ID!): DeleteLocationMutationResponse!
+
+    "Assign a Machine to a Type"
+    createMachineType(input: CreateMachineTypeInput!): CreateMachineTypeMutationResponse!
+    "Update a MachineType relation"
+    updateMachineType(input: UpdateMachineTypeInput!): UpdateMachineTypeMutationResponse!
+    "Delete a MachineType relation"
+    deleteMachineType(id: ID!): DeleteMachineTypeMutationResponse!
+}

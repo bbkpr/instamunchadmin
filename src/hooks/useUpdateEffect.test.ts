@@ -1,4 +1,4 @@
-import { renderHook,  } from '@testing-library/react'
+import { renderHook, getByDisplayValue } from '@testing-library/react'
 
 import useUpdateEffect from './useUpdateEffect'
 

@@ -1,33 +1,18 @@
-import React, { memo, Suspense } from 'react'
+import React, { memo, Suspense } from 'react';
+import { MachineList } from '@/pages/MachineList';
 
-import Box from '../../components/Box'
-import Spinner from '../../components/Spinner'
-import logo from '../../logo.svg'
-
-import Counter from './Counter'
-import DocList from './DocList'
-import styles from './index.module.css'
-
-interface Props {}
+interface Props {
+}
 
 const Index: React.FC<Props> = memo(() => {
   return (
     <>
-      <Box>
-        <h1 className={styles.h1}>I'm REACT_APP_TEXT from .env</h1>
-        <img src={logo} alt="react-logo" className="react-logo" />
-      </Box>
-      <Box>
-        <Counter />
-      </Box>
-      <Box>
-        <Suspense fallback={<Spinner size="xl" />}>
-          <DocList />
-        </Suspense>
-      </Box>
+      <MachineList />
+      <div>VITE_API_BASE_URL: {import.meta.env.VITE_API_BASE_URL}</div>
+      <div>VITE_GRAPHQL_URI: {import.meta.env.VITE_GRAPHQL_URI}</div>
     </>
-  )
-})
-Index.displayName = 'Index'
+  );
+});
+Index.displayName = 'Index';
 
-export default Index
+export default Index;
