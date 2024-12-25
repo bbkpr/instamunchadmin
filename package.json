@@ -26,7 +26,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@apollo/client": "~3.12.3",
+    "@apollo/client": "~3.12.4",
     "bootstrap": "~5.3.3",
     "clsx": "~2.1.1",
     "dotenv": "~16.4.7",
