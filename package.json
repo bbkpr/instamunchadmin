@@ -1,7 +1,7 @@
 {
-  "name": "create-react-app-vite",
-  "version": "0.4.0",
-  "license": "MIT",
+  "name": "instamunchadmin",
+  "version": "0.5.0",
+  "license": "Commercial",
   "msw": {
     "workerDirectory": "public"
   },
@@ -22,7 +22,6 @@
     "prettier": "prettier --ignore-unknown --write .",
     "clean": "rimraf node_modules pnpm-lock.yaml dist",
     "validate": "./scripts/validate",
-    "remove:tailwind": "scripts/remove_tailwind.js",
     "prepare": "husky"
   },
   "dependencies": {

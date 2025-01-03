@@ -1,8 +1,8 @@
 // hooks/useMachines.ts
 import { useQuery, useMutation } from '@apollo/client';
-import { GET_MACHINES } from '@/graphql/queries';
-import { CREATE_MACHINE, DELETE_MACHINE, UPDATE_MACHINE, UPDATE_MACHINE_ITEMS } from '@/graphql/mutations';
+import { GET_MACHINE_MANUFACTURERS, GET_MACHINE_TYPES, GET_MACHINES } from '@/graphql/queries';
 import { Machine } from '@/models';
+import { CREATE_MACHINE, DELETE_MACHINE, UPDATE_MACHINE } from '@/graphql/templates/machine.templates';
 
 export interface MachineFormData {
   name: string;
@@ -15,10 +15,17 @@ export interface UpdateMachineData extends MachineFormData {
 }
 
 export function useMachines() {
-  // Query hook
-  const { data, loading, error } = useQuery(GET_MACHINES, {
+  // Query hooks
+  const {
+    data: machinesData,
+    loading: machinesLoading,
+    error: machinesError
+  } = useQuery(GET_MACHINES, {
     fetchPolicy: 'cache-and-network'
   });
+
+  const { data: typesData, loading: typesLoading } = useQuery(GET_MACHINE_TYPES);
+  const { data: manufacturersData, loading: manufacturersLoading } = useQuery(GET_MACHINE_MANUFACTURERS);
 
   // Mutation hooks
   const [createMachineMutation] = useMutation(CREATE_MACHINE);
@@ -80,9 +87,11 @@ export function useMachines() {
   };
 
   return {
-    machines: data?.getMachines as Machine[] || [],
-    loading,
-    error,
+    machines: (machinesData?.getMachines as Machine[]) || [],
+    machineTypes: typesData?.getMachineTypes || [],
+    manufacturers: manufacturersData?.getMachineManufacturers || [],
+    loading: machinesLoading || typesLoading || manufacturersLoading,
+    error: machinesError,
     createMachine,
     updateMachine,
     deleteMachine
