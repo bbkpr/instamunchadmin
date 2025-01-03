@@ -23,6 +23,16 @@ export const CREATE_MACHINE_ITEM = gql`
   }
 `;
 
+export const DELETE_MACHINE_ITEM = gql`
+  mutation DeleteMachineItem($id: ID!) {
+    deleteMachineItem(id: $id) {
+      code
+      success
+      message
+    }
+  }
+`;
+
 export const UPDATE_MACHINE_ITEMS = gql`
   mutation UpdateMachineItems($input: UpdateMachineItemsInput!) {
     updateMachineItems(input: $input) {
