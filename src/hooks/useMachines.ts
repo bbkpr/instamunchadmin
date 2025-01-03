@@ -1,7 +1,7 @@
 // hooks/useMachines.ts
 import { useQuery, useMutation } from '@apollo/client';
 import { Machine } from '@/models';
-import { CREATE_MACHINE, DELETE_MACHINE, GET_MACHINES, UPDATE_MACHINE } from '@/graphql/templates/machine.templates';
+import { CREATE_MACHINE, DELETE_MACHINE, GET_MACHINES, UPDATE_MACHINE } from '@/graphql/templates/machine.template';
 import { GET_MACHINE_TYPES } from '@/graphql/templates/machineType.template';
 import { GET_MACHINE_MANUFACTURERS } from '@/graphql/templates/machineManufacturer.template';
 

@@ -27,13 +27,19 @@ export const GET_MACHINES = gql`
     getMachines {
       id
       name
+      createdAt
+      updatedAt
       machineType {
         id
         name
+        createdAt
+        updatedAt
       }
       manufacturer {
         id
         name
+        createdAt
+        updatedAt
       }
       machineItems {
         id
@@ -43,6 +49,22 @@ export const GET_MACHINES = gql`
           id
           name
           basePrice
+          createdAt
+          updatedAt
+        }
+      }
+      machineLocations {
+        id
+        name
+        location {
+          id
+          address1
+          address2
+          city
+          stateOrProvince
+          country
+          createdAt
+          updatedAt
         }
       }
     }
