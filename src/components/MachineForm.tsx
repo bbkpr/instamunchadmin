@@ -2,7 +2,8 @@
 import React from 'react';
 import { Modal, Form, Button, Spinner } from 'react-bootstrap';
 import { useQuery } from '@apollo/client';
-import { GET_MACHINE_TYPES, GET_MACHINE_MANUFACTURERS } from '@/graphql/queries';
+import { GET_MACHINE_TYPES } from '@/graphql/templates/machineType.template';
+import { GET_MACHINE_MANUFACTURERS } from '@/graphql/templates/machineManufacturer.template';
 
 interface MachineFormProps {
   show: boolean;
@@ -30,7 +31,7 @@ export function MachineForm({ show, onHide, onSubmit, initialData }: MachineForm
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       [name]: value
     }));
@@ -47,21 +48,13 @@ export function MachineForm({ show, onHide, onSubmit, initialData }: MachineForm
     <Modal show={show} onHide={onHide}>
       <Form onSubmit={handleSubmit}>
         <Modal.Header closeButton>
-          <Modal.Title>
-            {initialData ? 'Edit Machine' : 'Create New Machine'}
-          </Modal.Title>
+          <Modal.Title>{initialData ? 'Edit Machine' : 'Create New Machine'}</Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label>Machine Name</Form.Label>
-            <Form.Control
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
+            <Form.Control type="text" name="name" value={formData.name} onChange={handleChange} required />
           </Form.Group>
 
           <Form.Group className="mb-3">
@@ -105,24 +98,17 @@ export function MachineForm({ show, onHide, onSubmit, initialData }: MachineForm
           <Button variant="secondary" onClick={onHide}>
             Cancel
           </Button>
-          <Button
-            variant="primary"
-            type="submit"
-            disabled={isLoading}
-          >
+          <Button variant="primary" type="submit" disabled={isLoading}>
             {isLoading ? (
               <>
-                <Spinner
-                  as="span"
-                  animation="border"
-                  size="sm"
-                  role="status"
-                  aria-hidden="true"
-                  className="me-2"
-                />
+                <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" className="me-2" />
                 Loading...
               </>
-            ) : initialData ? 'Update' : 'Create'}
+            ) : initialData ? (
+              'Update'
+            ) : (
+              'Create'
+            )}
           </Button>
         </Modal.Footer>
       </Form>

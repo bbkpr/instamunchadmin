@@ -22,7 +22,33 @@ export const CREATE_MACHINE = gql`
   }
 `;
 
-// graphql/mutations.ts
+export const GET_MACHINES = gql`
+  query GetMachines {
+    getMachines {
+      id
+      name
+      machineType {
+        id
+        name
+      }
+      manufacturer {
+        id
+        name
+      }
+      machineItems {
+        id
+        name
+        quantity
+        item {
+          id
+          name
+          basePrice
+        }
+      }
+    }
+  }
+`;
+
 export const UPDATE_MACHINE = gql`
   mutation UpdateMachine($input: UpdateMachineInput!) {
     updateMachine(input: $input) {
