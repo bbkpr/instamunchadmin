@@ -1,9 +1,9 @@
 // hooks/useMachines.ts
 import { useQuery, useMutation } from '@apollo/client';
-import { Machine } from '@/models';
 import { CREATE_MACHINE, DELETE_MACHINE, GET_MACHINES, UPDATE_MACHINE } from '@/graphql/templates/machine.template';
 import { GET_MACHINE_TYPES } from '@/graphql/templates/machineType.template';
 import { GET_MACHINE_MANUFACTURERS } from '@/graphql/templates/machineManufacturer.template';
+import { Machine, MachineType } from '@/generated/graphql';
 
 export interface MachineFormData {
   name: string;
@@ -89,7 +89,7 @@ export function useMachines() {
 
   return {
     machines: (machinesData?.getMachines as Machine[]) || [],
-    machineTypes: typesData?.getMachineTypes || [],
+    machineTypes: (typesData?.getMachineTypes as MachineType[]) || [],
     manufacturers: manufacturersData?.getMachineManufacturers || [],
     loading: machinesLoading || typesLoading || manufacturersLoading,
     error: machinesError,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Table, Button, Spinner, Modal, Form } from 'react-bootstrap';
 import { useMachines } from '@/hooks/useMachines';
-import { Machine } from '@/models';
+import { Machine } from '@/generated/graphql';
 
 interface EditableField {
   fieldName: 'name' | 'machineTypeId' | 'manufacturerId';
@@ -43,8 +43,8 @@ export function MachineList() {
       await updateMachine({
         id: editingField.machineId,
         name: editingField.fieldName === 'name' ? editValue : machine.name,
-        machineTypeId: editingField.fieldName === 'machineTypeId' ? editValue : machine.machineType.id,
-        manufacturerId: editingField.fieldName === 'manufacturerId' ? editValue : machine.manufacturer.id
+        machineTypeId: editingField.fieldName === 'machineTypeId' ? editValue : machine.machineType!.id,
+        manufacturerId: editingField.fieldName === 'manufacturerId' ? editValue : machine.manufacturer!.id
       });
       setEditingField(null);
       setEditValue('');
@@ -121,8 +121,8 @@ export function MachineList() {
               machineId: machine.id,
               originalValue: options
                 ? fieldName === 'machineTypeId'
-                  ? machine.machineType.id
-                  : machine.manufacturer.id
+                  ? machine.machineType!.id
+                  : machine.manufacturer!.id
                 : machine.name
             })
           }
@@ -173,9 +173,9 @@ export function MachineList() {
           {machines.map((machine) => (
             <tr key={machine.id}>
               <td>{renderEditableCell(machine, 'name', machine.name)}</td>
-              <td>{renderEditableCell(machine, 'machineTypeId', machine.machineType.name, machineTypes)}</td>
-              <td>{renderEditableCell(machine, 'manufacturerId', machine.manufacturer.name, manufacturers)}</td>
-              <td>{machine.machineItems.length}</td>
+              <td>{renderEditableCell(machine, 'machineTypeId', machine.machineType!.name, machineTypes)}</td>
+              <td>{renderEditableCell(machine, 'manufacturerId', machine.manufacturer!.name, manufacturers)}</td>
+              <td>{machine.machineItems!.length}</td>
               <td>
                 <Button variant="outline-danger" size="sm" onClick={() => handleDeleteClick(machine)}>
                   Delete

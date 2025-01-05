@@ -7,7 +7,7 @@ import App from './App';
 const root = ReactDOM.createRoot(document.getElementById('root')!);
 
 // Setup MSW mock server in development
-if (process.env.NODE_ENV === 'development') {
+if (import.meta.env.VITE_ENABLE_MSW === 'true') {
   // Certify MSW's Service Worker is available before start React app.
   import('../mocks/browser')
     .then(async ({ worker }) => {
@@ -17,7 +17,6 @@ if (process.env.NODE_ENV === 'development') {
       root.render(<App />);
     });
   // Never setup MSW mock server in production
-} else if (process.env.NODE_ENV === 'production') {
+} else {
   root.render(<App />);
 }
-

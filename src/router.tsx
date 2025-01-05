@@ -1,8 +1,8 @@
-import { createBrowserRouter } from 'react-router'
+import { createBrowserRouter } from 'react-router';
 
-import Layout from './components/Layout/Layout'
-import Index from './pages/Index'
-import Notfound from './pages/Notfound'
+import Layout from './components/Layout/Layout';
+import Index from './pages/Index';
+import Notfound from './pages/Notfound';
 
 const router = createBrowserRouter([
   {
@@ -11,7 +11,7 @@ const router = createBrowserRouter([
       <Layout>
         <Index />
       </Layout>
-    ),
+    )
   },
   {
     path: '*',
@@ -19,8 +19,8 @@ const router = createBrowserRouter([
       <Layout>
         <Notfound />
       </Layout>
-    ),
-  },
-])
+    )
+  }
+]);
 
-export default router
+export default router;
