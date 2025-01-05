@@ -23,3 +23,78 @@ export const GET_ITEMS = gql`
     }
   }
 `;
+
+export const GET_ITEMS_BY_MACHINE = gql`
+  query GetItemsByMachine($machineId: ID!) {
+    getItemsByMachine(machineId: $machineId) {
+      id
+      name
+      quantity
+      machine {
+        id
+        name
+      }
+      item {
+        id
+        name
+        basePrice
+        expirationPeriod
+      }
+    }
+  }
+`;
+
+export const CREATE_ITEM = gql`
+  mutation CreateItem($input: CreateItemInput!) {
+    createItem(input: $input) {
+      code
+      success
+      message
+      item {
+        id
+        name
+        basePrice
+        expirationPeriod
+        createdAt
+        updatedAt
+      }
+    }
+  }
+`;
+
+export const UPDATE_ITEM = gql`
+  mutation UpdateItem($input: UpdateItemInput!) {
+    updateItem(input: $input) {
+      code
+      success
+      message
+      item {
+        id
+        name
+        basePrice
+        expirationPeriod
+        createdAt
+        updatedAt
+        machineItems {
+          id
+          name
+          quantity
+          machine {
+            id
+            name
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const DELETE_ITEM = gql`
+  mutation DeleteItem($id: ID!) {
+    deleteItem(id: $id) {
+      code
+      success
+      message
+    }
+  }
+`;
