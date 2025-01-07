@@ -386,6 +386,8 @@ export type Query = {
   getLocationsByMachineName: Array<Location>;
   /** Get all MachineItems, from everywhere */
   getMachineItems?: Maybe<Array<Maybe<MachineItem>>>;
+  /** Get all MachineLocations */
+  getMachineLocations?: Maybe<Array<MachineLocation>>;
   /** Get a MachineManufacturer by ID */
   getMachineManufacturer?: Maybe<MachineManufacturer>;
   /** Get all MachineManufacturers */
@@ -1189,6 +1191,7 @@ export type QueryResolvers<
     RequireFields<QueryGetLocationsByMachineNameArgs, 'machineName'>
   >;
   getMachineItems?: Resolver<Maybe<Array<Maybe<ResolversTypes['MachineItem']>>>, ParentType, ContextType>;
+  getMachineLocations?: Resolver<Maybe<Array<ResolversTypes['MachineLocation']>>, ParentType, ContextType>;
   getMachineManufacturer?: Resolver<
     Maybe<ResolversTypes['MachineManufacturer']>,
     ParentType,

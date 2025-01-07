@@ -10,13 +10,19 @@ export const CREATE_MACHINE_ITEM = gql`
         id
         name
         quantity
+        machineId
         machine {
           id
           name
+          createdAt
+          updatedAt
         }
+        itemId
         item {
           id
           name
+          createdAt
+          updatedAt
         }
       }
     }
@@ -43,13 +49,21 @@ export const UPDATE_MACHINE_ITEMS = gql`
         id
         name
         quantity
+        machineId
         machine {
           id
           name
+          createdAt
+          updatedAt
         }
+        itemId
         item {
           id
           name
+          basePrice
+          expirationPeriod
+          createdAt
+          updatedAt
         }
       }
     }

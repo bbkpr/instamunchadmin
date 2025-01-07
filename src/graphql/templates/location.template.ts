@@ -21,8 +21,39 @@ export const CREATE_LOCATION = gql`
           machine {
             id
             name
+            createdAt
+            updatedAt
           }
         }
+      }
+    }
+  }
+`;
+
+export const GET_LOCATIONS = gql`
+  query GetLocations {
+    getLocations {
+      id
+      address1
+      address2
+      city
+      stateOrProvince
+      country
+      createdAt
+      updatedAt
+      machineLocations {
+        id
+        name
+        machineId
+        machine {
+          id
+          name
+          createdAt
+          updatedAt
+        }
+        locationId
+        createdAt
+        updatedAt
       }
     }
   }

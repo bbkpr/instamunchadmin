@@ -13,6 +13,8 @@ export const GET_ITEMS = gql`
         id
         name
         quantity
+        itemId
+        machineId
         machine {
           id
           name
@@ -33,12 +35,16 @@ export const GET_ITEMS_BY_MACHINE = gql`
       machine {
         id
         name
+        createdAt
+        updatedAt
       }
       item {
         id
         name
         basePrice
         expirationPeriod
+        createdAt
+        updatedAt
       }
     }
   }
@@ -77,11 +83,15 @@ export const UPDATE_ITEM = gql`
         updatedAt
         machineItems {
           id
+          itemId
           name
           quantity
+          machineId
           machine {
             id
             name
+            createdAt
+            updatedAt
           }
         }
       }

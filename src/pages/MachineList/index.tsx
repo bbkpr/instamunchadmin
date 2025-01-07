@@ -21,7 +21,33 @@ export function MachineList() {
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
   const [machineToDelete, setMachineToDelete] = React.useState<Machine | null>(null);
 
-  const { machines, loading, error, updateMachine, deleteMachine, machineTypes, manufacturers } = useMachines();
+  const {
+    // Overall loading/error states
+    error,
+    loading,
+
+    // Entities
+    machines,
+    locations,
+    machineLocations,
+    machineManufacturers,
+    machineTypes,
+
+    // Error/loading details
+    locationsError,
+    locationsLoading,
+    machinesError,
+    machinesLoading,
+    machineLocationsError,
+    machineLocationsLoading,
+    machineManufacturersError,
+    machineManufacturersLoading,
+    machineTypesError,
+    machineTypesLoading,
+    createMachine,
+    updateMachine,
+    deleteMachine
+  } = useMachines();
 
   const handleEditClick = (field: EditableField) => {
     setEditingField(field);
@@ -174,7 +200,7 @@ export function MachineList() {
             <tr key={machine.id}>
               <td>{renderEditableCell(machine, 'name', machine.name)}</td>
               <td>{renderEditableCell(machine, 'machineTypeId', machine.machineType!.name, machineTypes)}</td>
-              <td>{renderEditableCell(machine, 'manufacturerId', machine.manufacturer!.name, manufacturers)}</td>
+              <td>{renderEditableCell(machine, 'manufacturerId', machine.manufacturer!.name, machineManufacturers)}</td>
               <td>{machine.machineItems!.length}</td>
               <td>
                 <Button variant="outline-danger" size="sm" onClick={() => handleDeleteClick(machine)}>

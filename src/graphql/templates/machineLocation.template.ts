@@ -11,16 +11,54 @@ export const CREATE_MACHINE_LOCATION = gql`
         name
         machineId
         locationId
+        createdAt
+        updatedAt
         machine {
           id
           name
+          createdAt
+          updatedAt
         }
         location {
           id
           address1
+          address2
           city
+          stateOrProvince
+          country
+          createdAt
+          updatedAt
         }
       }
+    }
+  }
+`;
+
+export const GET_MACHINE_LOCATIONS = gql`
+  query GetMachineLocations {
+    getMachineLocations {
+      id
+      name
+      machineId
+      machine {
+        id
+        name
+        createdAt
+        updatedAt
+      }
+      locationId
+      location {
+        id
+        address1
+        address2
+        city
+        stateOrProvince
+        country
+        createdAt
+        updatedAt
+      }
+      createdAt
+      updatedAt
     }
   }
 `;
@@ -36,14 +74,23 @@ export const UPDATE_MACHINE_LOCATION = gql`
         name
         machineId
         locationId
+        createdAt
+        updatedAt
         machine {
           id
           name
+          createdAt
+          updatedAt
         }
         location {
           id
           address1
+          address2
           city
+          stateOrProvince
+          country
+          createdAt
+          updatedAt
         }
       }
     }

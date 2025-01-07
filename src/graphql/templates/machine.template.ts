@@ -12,10 +12,14 @@ export const CREATE_MACHINE = gql`
         machineType {
           id
           name
+          createdAt
+          updatedAt
         }
         manufacturer {
           id
           name
+          createdAt
+          updatedAt
         }
       }
     }
@@ -80,13 +84,50 @@ export const UPDATE_MACHINE = gql`
       machine {
         id
         name
+        createdAt
+        updatedAt
+        machineItems {
+          id
+          name
+          quantity
+          machineId
+          itemId
+          item {
+            id
+            name
+            basePrice
+            createdAt
+            updatedAt
+          }
+        }
+        machineLocations {
+          id
+          name
+          machineId
+          locationId
+          location {
+            id
+            address1
+            address2
+            city
+            stateOrProvince
+            country
+            createdAt
+            updatedAt
+          }
+        }
         machineType {
           id
           name
+          createdAt
+          updatedAt
+          manufacturerId
         }
         manufacturer {
           id
           name
+          createdAt
+          updatedAt
         }
       }
     }
