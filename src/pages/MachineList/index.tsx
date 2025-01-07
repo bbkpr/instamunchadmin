@@ -107,6 +107,7 @@ export function MachineList() {
           onClick={() => {
             setSelectedMachine(null);
             setShowEditModal(true);
+            setFormData(() => ({ name: '', machineTypeId: '', manufacturerId: '' }));
           }}
         >
           Add Machine
@@ -117,6 +118,7 @@ export function MachineList() {
         <thead>
           <tr>
             <th>Name</th>
+            <th>Location</th>
             <th>Type</th>
             <th>Items</th>
             <th>Actions</th>
@@ -126,6 +128,7 @@ export function MachineList() {
           {machines.map((machine) => (
             <tr key={machine.id}>
               <td>{machine.name}</td>
+              <td>{machine.machineLocations?.length ? machine.machineLocations[0]!.location!.address1 : 'Unknown'}</td>
               <td>
                 {machine.manufacturer?.name} {machine.machineType?.name}
               </td>

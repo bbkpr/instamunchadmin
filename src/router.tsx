@@ -4,13 +4,16 @@ import Index from './pages/Index';
 import Notfound from './pages/Notfound';
 import { Locations } from '@/pages/Locations';
 import { Layout } from '@/components/Layout/Layout';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
       <Layout>
-        <Index />
+        <ErrorBoundary>
+          <Index />
+        </ErrorBoundary>
       </Layout>
     )
   },
@@ -18,7 +21,9 @@ const router = createBrowserRouter([
     path: '/locations',
     element: (
       <Layout>
-        <Locations />
+        <ErrorBoundary>
+          <Locations />
+        </ErrorBoundary>
       </Layout>
     )
   },
@@ -26,7 +31,9 @@ const router = createBrowserRouter([
     path: '*',
     element: (
       <Layout>
-        <Notfound />
+        <ErrorBoundary>
+          <Notfound />
+        </ErrorBoundary>
       </Layout>
     )
   }

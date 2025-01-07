@@ -1,58 +1,42 @@
-import type { ErrorInfo, ReactNode } from 'react'
-import React, { Component } from 'react'
+import type { ErrorInfo, ReactNode } from 'react';
+import React, { Component } from 'react';
+import { Container, Alert } from 'react-bootstrap';
 
 interface Props {
-  children?: ReactNode
+  children?: ReactNode;
 }
 
 interface State {
-  error: Error | null
-  info: ErrorInfo | null
+  error: Error | null;
+  info: ErrorInfo | null;
 }
+
 class ErrorBoundary extends Component<Props, State> {
   state = {
     error: null,
-    info: null,
-  }
+    info: null
+  };
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
-    this.setState({ error, info })
+    this.setState({ error, info });
   }
 
   render(): ReactNode {
-    const { error } = this.state
+    const { error } = this.state;
     if (error) {
-      //Sentry.captureException(error)
-      return <ErrorBoundaryFallbackComponent />
+      return <ErrorBoundaryFallbackComponent />;
     }
-    return this.props.children
+    return this.props.children;
   }
 }
 
-export default ErrorBoundary
+export default ErrorBoundary;
 
-const LayoutStyle: React.CSSProperties = {
-  alignItems: 'center',
-  display: 'flex',
-  justifyContent: 'center',
-  minHeight: '100vh',
-  minWidth: '100%',
-}
-
-const MessageStyle: React.CSSProperties = {
-  border: '2px #78909c solid',
-  borderRadius: '5px',
-  color: '#78909c',
-  fontSize: '24px',
-  padding: '40px',
-}
-
-export const ErrorBoundaryFallbackComponent: React.FC<
-  React.PropsWithChildren<unknown>
-> = () => (
-  <main style={LayoutStyle}>
-    <section style={MessageStyle}>
-      An error occurred!
-    </section>
-  </main>
-)
+export const ErrorBoundaryFallbackComponent: React.FC<React.PropsWithChildren<unknown>> = () => (
+  <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+    <Alert variant="danger" className="p-4 text-center">
+      <h4 className="alert-heading">An error occurred!</h4>
+      <p className="mb-0">Please try refreshing the page or contact support if the problem persists.</p>
+    </Alert>
+  </Container>
+);
