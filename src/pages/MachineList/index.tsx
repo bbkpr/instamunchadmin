@@ -15,7 +15,9 @@ export function MachineList() {
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showItemsModal, setShowItemsModal] = useState(false);
   const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
+  const [selectedMachineItems, setSelectedMachineItems] = useState<Machine | null>(null);
   const [formData, setFormData] = useState<MachineFormData>({
     name: '',
     machineTypeId: '',
@@ -60,6 +62,11 @@ export function MachineList() {
     }
   };
 
+  const handleItemsClick = (machine: Machine) => {
+    setSelectedMachineItems(machine);
+    setShowItemsModal(true);
+  };
+
   const handleDelete = async () => {
     if (!selectedMachine) return;
     try {
@@ -73,7 +80,7 @@ export function MachineList() {
 
   if (loading) {
     return (
-      <Container className="d-flex justify-content-center py-4">
+      <Container className="d-flex justify-content-center py-4" fluid>
         <Spinner animation="border" role="status">
           <span className="visually-hidden">Loading...</span>
         </Spinner>
@@ -83,7 +90,7 @@ export function MachineList() {
 
   if (error) {
     return (
-      <Container className="py-4">
+      <Container className="py-4" fluid>
         <div className="alert alert-danger" role="alert">
           Error loading machines: {error.message}
         </div>
@@ -92,7 +99,7 @@ export function MachineList() {
   }
 
   return (
-    <Container className="py-4">
+    <Container className="py-4" fluid>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Machines</h2>
         <Button
@@ -111,8 +118,7 @@ export function MachineList() {
           <tr>
             <th>Name</th>
             <th>Type</th>
-            <th>Manufacturer</th>
-            <th>Items Count</th>
+            <th>Items</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -120,9 +126,14 @@ export function MachineList() {
           {machines.map((machine) => (
             <tr key={machine.id}>
               <td>{machine.name}</td>
-              <td>{machine.machineType?.name}</td>
-              <td>{machine.manufacturer?.name}</td>
-              <td>{machine.machineItems?.length || 0}</td>
+              <td>
+                {machine.manufacturer?.name} {machine.machineType?.name}
+              </td>
+              <td>
+                <Button variant="link" className="p-0" onClick={() => handleItemsClick(machine)}>
+                  {machine.machineItems?.length || 0}
+                </Button>
+              </td>
               <td>
                 <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleEditClick(machine)}>
                   Edit
@@ -154,22 +165,6 @@ export function MachineList() {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label>Type</Form.Label>
-              <Form.Select
-                value={formData.machineTypeId}
-                onChange={(e) => setFormData((prev) => ({ ...prev, machineTypeId: e.target.value }))}
-                required
-              >
-                <option value="">Select a type...</option>
-                {machineTypes.map((type) => (
-                  <option key={type.id} value={type.id}>
-                    {type.name}
-                  </option>
-                ))}
-              </Form.Select>
-            </Form.Group>
-
-            <Form.Group className="mb-3">
               <Form.Label>Manufacturer</Form.Label>
               <Form.Select
                 value={formData.manufacturerId}
@@ -182,6 +177,24 @@ export function MachineList() {
                     {manufacturer.name}
                   </option>
                 ))}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Type</Form.Label>
+              <Form.Select
+                value={formData.machineTypeId}
+                onChange={(e) => setFormData((prev) => ({ ...prev, machineTypeId: e.target.value }))}
+                required
+              >
+                <option value="">Select a type...</option>
+                {machineTypes
+                  .filter((mt) => (formData.manufacturerId ? mt.manufacturerId === formData.manufacturerId : true))
+                  .map((type) => (
+                    <option key={type.id} value={type.id}>
+                      {type.name}
+                    </option>
+                  ))}
               </Form.Select>
             </Form.Group>
           </Modal.Body>
@@ -210,6 +223,47 @@ export function MachineList() {
           </Button>
           <Button variant="danger" onClick={handleDelete}>
             Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Machine Items Modal */}
+      <Modal show={showItemsModal} onHide={() => setShowItemsModal(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Items in {selectedMachineItems?.name}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Table striped bordered hover>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Base Price</th>
+                <th>Expiration Period</th>
+                <th>Quantity</th>
+              </tr>
+            </thead>
+            <tbody>
+              {selectedMachineItems?.machineItems?.map((machineItem) => (
+                <tr key={machineItem!.id}>
+                  <td>{machineItem!.item?.name}</td>
+                  <td>${machineItem!.item?.basePrice?.toFixed(2)}</td>
+                  <td>{machineItem!.item?.expirationPeriod} days</td>
+                  <td>{machineItem!.quantity}</td>
+                </tr>
+              ))}
+              {!selectedMachineItems?.machineItems?.length && (
+                <tr>
+                  <td colSpan={4} className="text-center">
+                    No items in this machine
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowItemsModal(false)}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>

@@ -12,7 +12,7 @@ export function Layout({ children }: LayoutProps) {
   return (
     <>
       <Navbar bg="dark" variant="dark" expand="lg">
-        <Container>
+        <Container fluid>
           <Navbar.Brand as={Link} to="/">
             InstaMunch Vending
           </Navbar.Brand>

@@ -69,7 +69,7 @@ export function Locations() {
 
   if (loading) {
     return (
-      <Container className="d-flex justify-content-center py-4">
+      <Container className="d-flex justify-content-center py-4" fluid>
         <Spinner animation="border" role="status">
           <span className="visually-hidden">Loading...</span>
         </Spinner>
@@ -79,7 +79,7 @@ export function Locations() {
 
   if (error) {
     return (
-      <Container className="py-4">
+      <Container className="py-4" fluid>
         <div className="alert alert-danger" role="alert">
           Error loading locations: {error.message}
         </div>
@@ -88,7 +88,7 @@ export function Locations() {
   }
 
   return (
-    <div className="container py-4">
+    <Container className="py-4" fluid>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Locations</h2>
         <Button
@@ -214,6 +214,6 @@ export function Locations() {
           </Button>
         </Modal.Footer>
       </Modal>
-    </div>
+    </Container>
   );
 }

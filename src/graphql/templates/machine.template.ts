@@ -53,6 +53,7 @@ export const GET_MACHINES = gql`
           id
           name
           basePrice
+          expirationPeriod
           createdAt
           updatedAt
         }
