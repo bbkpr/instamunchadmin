@@ -1,13 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Container, Table, Button, Spinner, Modal, Form } from 'react-bootstrap';
 import { useMachines } from '@/hooks/useMachines';
 import { Machine } from '@/generated/graphql';
-
-interface EditableField {
-  fieldName: 'name' | 'machineTypeId' | 'manufacturerId';
-  machineId: string;
-  originalValue: string;
-}
 
 interface MachineFormData {
   name: string;
@@ -16,147 +10,65 @@ interface MachineFormData {
 }
 
 export function MachineList() {
-  const [editingField, setEditingField] = React.useState<EditableField | null>(null);
-  const [editValue, setEditValue] = React.useState('');
-  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
-  const [machineToDelete, setMachineToDelete] = React.useState<Machine | null>(null);
+  const { machines, machineTypes, machineManufacturers, loading, error, createMachine, updateMachine, deleteMachine } =
+    useMachines();
 
-  const {
-    // Overall loading/error states
-    error,
-    loading,
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
+  const [formData, setFormData] = useState<MachineFormData>({
+    name: '',
+    machineTypeId: '',
+    manufacturerId: ''
+  });
 
-    // Entities
-    machines,
-    locations,
-    machineLocations,
-    machineManufacturers,
-    machineTypes,
-
-    // Error/loading details
-    locationsError,
-    locationsLoading,
-    machinesError,
-    machinesLoading,
-    machineLocationsError,
-    machineLocationsLoading,
-    machineManufacturersError,
-    machineManufacturersLoading,
-    machineTypesError,
-    machineTypesLoading,
-    createMachine,
-    updateMachine,
-    deleteMachine
-  } = useMachines();
-
-  const handleEditClick = (field: EditableField) => {
-    setEditingField(field);
-    setEditValue(field.originalValue);
-  };
-
-  const handleCancelEdit = () => {
-    setEditingField(null);
-    setEditValue('');
-  };
-
-  const handleSubmitEdit = async () => {
-    if (!editingField) return;
-
-    const machine = machines.find((m) => m.id === editingField.machineId);
-    if (!machine) return;
-
-    try {
-      await updateMachine({
-        id: editingField.machineId,
-        name: editingField.fieldName === 'name' ? editValue : machine.name,
-        machineTypeId: editingField.fieldName === 'machineTypeId' ? editValue : machine.machineType!.id,
-        manufacturerId: editingField.fieldName === 'manufacturerId' ? editValue : machine.manufacturer!.id
-      });
-      setEditingField(null);
-      setEditValue('');
-    } catch (err) {
-      console.error('Error updating machine:', err);
-    }
+  const handleEditClick = (machine: Machine) => {
+    setSelectedMachine(machine);
+    setFormData({
+      name: machine.name,
+      machineTypeId: machine.machineType!.id,
+      manufacturerId: machine.manufacturer!.id
+    });
+    setShowEditModal(true);
   };
 
   const handleDeleteClick = (machine: Machine) => {
-    setMachineToDelete(machine);
-    setShowDeleteConfirm(true);
+    setSelectedMachine(machine);
+    setShowDeleteModal(true);
   };
 
-  const handleDeleteConfirm = async () => {
-    if (!machineToDelete) return;
-
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      await deleteMachine(machineToDelete.id);
-      setShowDeleteConfirm(false);
-      setMachineToDelete(null);
+      if (selectedMachine) {
+        await updateMachine({
+          id: selectedMachine.id,
+          ...formData
+        });
+      } else {
+        await createMachine(formData);
+      }
+      setShowEditModal(false);
+      setSelectedMachine(null);
+      setFormData({
+        name: '',
+        machineTypeId: '',
+        manufacturerId: ''
+      });
+    } catch (err) {
+      console.error('Error saving machine:', err);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!selectedMachine) return;
+    try {
+      await deleteMachine(selectedMachine.id);
+      setShowDeleteModal(false);
+      setSelectedMachine(null);
     } catch (err) {
       console.error('Error deleting machine:', err);
     }
-  };
-
-  const renderEditableCell = (
-    machine: Machine,
-    fieldName: EditableField['fieldName'],
-    displayValue: string,
-    options?: { id: string; name: string }[]
-  ) => {
-    const isEditing = editingField?.machineId === machine.id && editingField?.fieldName === fieldName;
-
-    if (isEditing) {
-      return (
-        <div className="d-flex align-items-center">
-          {options ? (
-            <Form.Select value={editValue} onChange={(e) => setEditValue(e.target.value)} size="sm" className="me-2">
-              {options.map((option) => (
-                <option key={option.id} value={option.id}>
-                  {option.name}
-                </option>
-              ))}
-            </Form.Select>
-          ) : (
-            <Form.Control
-              type="text"
-              value={editValue}
-              onChange={(e) => setEditValue(e.target.value)}
-              size="sm"
-              className="me-2"
-            />
-          )}
-          <Button variant="success" size="sm" className="me-1" onClick={handleSubmitEdit}>
-            ✓
-          </Button>
-          <Button variant="secondary" size="sm" onClick={handleCancelEdit}>
-            ✗
-          </Button>
-        </div>
-      );
-    }
-
-    return (
-      <div className="d-flex align-items-center justify-content-between">
-        {displayValue}
-        <Button
-          variant="link"
-          size="sm"
-          className="p-0 ms-2"
-          onClick={() =>
-            handleEditClick({
-              fieldName,
-              machineId: machine.id,
-              originalValue: options
-                ? fieldName === 'machineTypeId'
-                  ? machine.machineType!.id
-                  : machine.manufacturer!.id
-                : machine.name
-            })
-          }
-        >
-          ✎
-        </Button>
-      </div>
-    );
   };
 
   if (loading) {
@@ -183,6 +95,15 @@ export function MachineList() {
     <Container className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Machines</h2>
+        <Button
+          variant="primary"
+          onClick={() => {
+            setSelectedMachine(null);
+            setShowEditModal(true);
+          }}
+        >
+          Add Machine
+        </Button>
       </div>
 
       <Table striped bordered hover responsive>
@@ -198,11 +119,14 @@ export function MachineList() {
         <tbody>
           {machines.map((machine) => (
             <tr key={machine.id}>
-              <td>{renderEditableCell(machine, 'name', machine.name)}</td>
-              <td>{renderEditableCell(machine, 'machineTypeId', machine.machineType!.name, machineTypes)}</td>
-              <td>{renderEditableCell(machine, 'manufacturerId', machine.manufacturer!.name, machineManufacturers)}</td>
-              <td>{machine.machineItems!.length}</td>
+              <td>{machine.name}</td>
+              <td>{machine.machineType?.name}</td>
+              <td>{machine.manufacturer?.name}</td>
+              <td>{machine.machineItems?.length || 0}</td>
               <td>
+                <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleEditClick(machine)}>
+                  Edit
+                </Button>
                 <Button variant="outline-danger" size="sm" onClick={() => handleDeleteClick(machine)}>
                   Delete
                 </Button>
@@ -212,18 +136,79 @@ export function MachineList() {
         </tbody>
       </Table>
 
-      <Modal show={showDeleteConfirm} onHide={() => setShowDeleteConfirm(false)}>
+      {/* Edit Modal */}
+      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+        <Form onSubmit={handleFormSubmit}>
+          <Modal.Header closeButton>
+            <Modal.Title>{selectedMachine ? 'Edit Machine' : 'Add Machine'}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form.Group className="mb-3">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.name}
+                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
+                required
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Type</Form.Label>
+              <Form.Select
+                value={formData.machineTypeId}
+                onChange={(e) => setFormData((prev) => ({ ...prev, machineTypeId: e.target.value }))}
+                required
+              >
+                <option value="">Select a type...</option>
+                {machineTypes.map((type) => (
+                  <option key={type.id} value={type.id}>
+                    {type.name}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Manufacturer</Form.Label>
+              <Form.Select
+                value={formData.manufacturerId}
+                onChange={(e) => setFormData((prev) => ({ ...prev, manufacturerId: e.target.value }))}
+                required
+              >
+                <option value="">Select a manufacturer...</option>
+                {machineManufacturers.map((manufacturer) => (
+                  <option key={manufacturer.id} value={manufacturer.id}>
+                    {manufacturer.name}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowEditModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit">
+              Save
+            </Button>
+          </Modal.Footer>
+        </Form>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Confirm Delete</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Are you sure you want to delete the machine "{machineToDelete?.name}"? This action cannot be undone.
+          Are you sure you want to delete the machine "{selectedMachine?.name}"? This action cannot be undone.
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowDeleteConfirm(false)}>
+          <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>
             Cancel
           </Button>
-          <Button variant="danger" onClick={handleDeleteConfirm}>
+          <Button variant="danger" onClick={handleDelete}>
             Delete
           </Button>
         </Modal.Footer>
