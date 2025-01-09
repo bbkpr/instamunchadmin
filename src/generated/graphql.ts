@@ -384,6 +384,7 @@ export type Query = {
   getLocationsByItem?: Maybe<Array<Location>>;
   /** Get Locations with a Machine matching a name (case insensitive) */
   getLocationsByMachineName: Array<Location>;
+  getMachine?: Maybe<Machine>;
   /** Get all MachineItems, from everywhere */
   getMachineItems?: Maybe<Array<Maybe<MachineItem>>>;
   /** Get all MachineLocations */
@@ -414,6 +415,10 @@ export type QueryGetLocationsByItemArgs = {
 
 export type QueryGetLocationsByMachineNameArgs = {
   machineName: Scalars['String']['input'];
+};
+
+export type QueryGetMachineArgs = {
+  machineId: Scalars['ID']['input'];
 };
 
 export type QueryGetMachineManufacturerArgs = {
@@ -1189,6 +1194,12 @@ export type QueryResolvers<
     ParentType,
     ContextType,
     RequireFields<QueryGetLocationsByMachineNameArgs, 'machineName'>
+  >;
+  getMachine?: Resolver<
+    Maybe<ResolversTypes['Machine']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetMachineArgs, 'machineId'>
   >;
   getMachineItems?: Resolver<Maybe<Array<Maybe<ResolversTypes['MachineItem']>>>, ParentType, ContextType>;
   getMachineLocations?: Resolver<Maybe<Array<ResolversTypes['MachineLocation']>>, ParentType, ContextType>;

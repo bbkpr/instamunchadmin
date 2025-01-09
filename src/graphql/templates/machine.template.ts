@@ -26,6 +26,52 @@ export const CREATE_MACHINE = gql`
   }
 `;
 
+export const GET_MACHINE = gql`
+  query GetMachine($id: ID!) {
+    getMachine(machineId: $id) {
+      id
+      name
+      createdAt
+      updatedAt
+      machineType {
+        id
+        name
+        manufacturer {
+          id
+          name
+        }
+      }
+      manufacturer {
+        id
+        name
+      }
+      machineItems {
+        id
+        name
+        quantity
+        item {
+          id
+          name
+          basePrice
+          expirationPeriod
+        }
+      }
+      machineLocations {
+        id
+        name
+        location {
+          id
+          address1
+          address2
+          city
+          stateOrProvince
+          country
+        }
+      }
+    }
+  }
+`;
+
 export const GET_MACHINES = gql`
   query GetMachines {
     getMachines {

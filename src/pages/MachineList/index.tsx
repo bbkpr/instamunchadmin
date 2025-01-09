@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Container, Table, Button, Spinner, Modal, Form } from 'react-bootstrap';
 import { useMachines } from '@/hooks/useMachines';
 import { Machine } from '@/generated/graphql';
+import { useNavigate } from 'react-router';
 
 interface MachineFormData {
   name: string;
@@ -10,6 +11,7 @@ interface MachineFormData {
 }
 
 export function MachineList() {
+  const navigate = useNavigate();
   const { machines, machineTypes, machineManufacturers, loading, error, createMachine, updateMachine, deleteMachine } =
     useMachines();
 
@@ -138,6 +140,14 @@ export function MachineList() {
                 </Button>
               </td>
               <td>
+                <Button
+                  variant="outline-primary"
+                  size="sm"
+                  className="me-2"
+                  onClick={() => navigate(`/machines/${machine.id}`)}
+                >
+                  Manage Items
+                </Button>
                 <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleEditClick(machine)}>
                   Edit
                 </Button>
