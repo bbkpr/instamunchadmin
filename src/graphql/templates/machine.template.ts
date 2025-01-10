@@ -36,10 +36,6 @@ export const GET_MACHINE = gql`
       machineType {
         id
         name
-        manufacturer {
-          id
-          name
-        }
       }
       manufacturer {
         id

@@ -201,13 +201,15 @@ export function MachineList() {
                 required
               >
                 <option value="">Select a type...</option>
-                {machineTypes
-                  .filter((mt) => (formData.manufacturerId ? mt.manufacturerId === formData.manufacturerId : true))
-                  .map((type) => (
-                    <option key={type.id} value={type.id}>
-                      {type.name}
-                    </option>
-                  ))}
+                {formData.manufacturerId
+                  ? machineTypes
+                      .filter((mt) => (formData.manufacturerId ? mt.manufacturerId === formData.manufacturerId : true))
+                      .map((type) => (
+                        <option key={type.id} value={type.id}>
+                          {type.name}
+                        </option>
+                      ))
+                  : null}
               </Form.Select>
             </Form.Group>
           </Modal.Body>

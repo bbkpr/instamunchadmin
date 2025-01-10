@@ -83,7 +83,7 @@ export function MachineDetails() {
   };
 
   return (
-    <Container className="py-4">
+    <Container className="py-4" fluid>
       <Row className="mb-4">
         <Col>
           <Button variant="secondary" onClick={() => navigate('/machines')} className="mb-3">
