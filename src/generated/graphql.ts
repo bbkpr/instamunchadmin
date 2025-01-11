@@ -35,6 +35,7 @@ export type CreateLocationInput = {
   address2?: InputMaybe<Scalars['String']['input']>;
   city: Scalars['String']['input'];
   country: Scalars['String']['input'];
+  postalCode: Scalars['String']['input'];
   stateOrProvince: Scalars['String']['input'];
 };
 
@@ -57,6 +58,7 @@ export type CreateMachineItemInput = {
   machineId: Scalars['ID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
   quantity: Scalars['Int']['input'];
+  setPrice?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type CreateMachineItemMutationResponse = MutationResponse & {
@@ -186,6 +188,7 @@ export type Location = {
   createdAt: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   machineLocations?: Maybe<Array<Maybe<MachineLocation>>>;
+  postalCode: Scalars['String']['output'];
   stateOrProvince: Scalars['String']['output'];
   updatedAt: Scalars['String']['output'];
 };
@@ -212,6 +215,7 @@ export type MachineItem = {
   /** Optional override for item name in specific machine */
   name?: Maybe<Scalars['String']['output']>;
   quantity: Scalars['Int']['output'];
+  setPrice?: Maybe<Scalars['Float']['output']>;
 };
 
 export type MachineLocation = {
@@ -458,6 +462,7 @@ export type UpdateLocationInput = {
   city?: InputMaybe<Scalars['String']['input']>;
   country?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
+  postalCode: Scalars['String']['input'];
   stateOrProvince?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -929,6 +934,7 @@ export type LocationResolvers<
   createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   machineLocations?: Resolver<Maybe<Array<Maybe<ResolversTypes['MachineLocation']>>>, ParentType, ContextType>;
+  postalCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   stateOrProvince?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -960,6 +966,7 @@ export type MachineItemResolvers<
   machineId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   quantity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  setPrice?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

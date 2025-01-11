@@ -1,10 +1,15 @@
 // hooks/useMachines.ts
 import { useQuery, useMutation } from '@apollo/client';
+import omit from 'lodash/omit';
 import { CREATE_MACHINE, DELETE_MACHINE, GET_MACHINES, UPDATE_MACHINE } from '@/graphql/templates/machine.template';
 import { GET_MACHINE_TYPES } from '@/graphql/templates/machineType.template';
 import { GET_MACHINE_MANUFACTURERS } from '@/graphql/templates/machineManufacturer.template';
 import { Location, Machine, MachineLocation, MachineManufacturer, MachineType } from '@/generated/graphql';
-import { GET_MACHINE_LOCATIONS } from '@/graphql/templates/machineLocation.template';
+import {
+  CREATE_MACHINE_LOCATION,
+  GET_MACHINE_LOCATIONS,
+  UPDATE_MACHINE_LOCATION
+} from '@/graphql/templates/machineLocation.template';
 import { GET_LOCATIONS } from '@/graphql/templates/location.template';
 
 export interface MachineFormData {
@@ -59,6 +64,9 @@ export function useMachines() {
   const [updateMachineMutation] = useMutation(UPDATE_MACHINE);
   const [deleteMachineMutation] = useMutation(DELETE_MACHINE);
 
+  const [createMachineLocationMutation] = useMutation(CREATE_MACHINE_LOCATION);
+  const [updateMachineLocationMutation] = useMutation(UPDATE_MACHINE_LOCATION);
+
   const createMachine = async (input: MachineFormData) => {
     const result = await createMachineMutation({
       variables: { input },
@@ -74,7 +82,7 @@ export function useMachines() {
 
   const updateMachine = async (input: UpdateMachineData) => {
     const result = await updateMachineMutation({
-      variables: { input },
+      variables: { input: omit(input, 'locationId', 'machineLocationId') },
       refetchQueries: [{ query: GET_MACHINES }]
     });
 
@@ -96,6 +104,32 @@ export function useMachines() {
     }
 
     return true;
+  };
+
+  const createMachineLocation = async (input: { machineId: string; locationId: string }) => {
+    const result = await createMachineLocationMutation({
+      variables: { input },
+      refetchQueries: [{ query: GET_MACHINES }]
+    });
+
+    if (!result.data?.createMachineLocation.success) {
+      throw new Error(result.data?.createMachineLocation.message);
+    }
+
+    return result.data.createMachineLocation.machineLocation;
+  };
+
+  const updateMachineLocation = async (input: { id: string; machineId: string; locationId: string }) => {
+    const result = await updateMachineLocationMutation({
+      variables: { input },
+      refetchQueries: [{ query: GET_MACHINES }]
+    });
+
+    if (!result.data?.updateMachineLocation.success) {
+      throw new Error(result.data?.updateMachineLocation.message);
+    }
+
+    return result.data.updateMachineLocation.machineLocation;
   };
 
   return {
@@ -125,6 +159,8 @@ export function useMachines() {
     machineTypesLoading,
     createMachine,
     updateMachine,
-    deleteMachine
+    deleteMachine,
+    createMachineLocation,
+    updateMachineLocation
   };
 }

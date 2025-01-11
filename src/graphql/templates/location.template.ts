@@ -12,6 +12,7 @@ export const CREATE_LOCATION = gql`
         address2
         city
         stateOrProvince
+        postalCode
         country
         createdAt
         updatedAt
@@ -38,6 +39,7 @@ export const GET_LOCATIONS = gql`
       address2
       city
       stateOrProvince
+      postalCode
       country
       createdAt
       updatedAt
@@ -71,6 +73,7 @@ export const UPDATE_LOCATION = gql`
         address2
         city
         stateOrProvince
+        postalCode
         country
         createdAt
         updatedAt

@@ -61,6 +61,7 @@ export const GET_MACHINE = gql`
           address2
           city
           stateOrProvince
+          postalCode
           country
         }
       }
@@ -109,6 +110,7 @@ export const GET_MACHINES = gql`
           address2
           city
           stateOrProvince
+          postalCode
           country
           createdAt
           updatedAt
@@ -154,6 +156,7 @@ export const UPDATE_MACHINE = gql`
             address2
             city
             stateOrProvince
+            postalCode
             country
             createdAt
             updatedAt

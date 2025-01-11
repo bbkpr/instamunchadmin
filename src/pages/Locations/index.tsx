@@ -12,6 +12,7 @@ export function Locations() {
     address1: '',
     city: '',
     stateOrProvince: '',
+    postalCode: '',
     country: ''
   });
 
@@ -22,6 +23,7 @@ export function Locations() {
       address2: location.address2 || '',
       city: location.city,
       stateOrProvince: location.stateOrProvince,
+      postalCode: location.postalCode,
       country: location.country
     });
     setShowEditModal(true);
@@ -49,6 +51,7 @@ export function Locations() {
         address1: '',
         city: '',
         stateOrProvince: '',
+        postalCode: '',
         country: ''
       });
     } catch (err) {
@@ -108,6 +111,7 @@ export function Locations() {
             <th>Address</th>
             <th>City</th>
             <th>State/Province</th>
+            <th>Postal Code</th>
             <th>Country</th>
             <th>Actions</th>
           </tr>
@@ -122,6 +126,7 @@ export function Locations() {
               </td>
               <td>{location.city}</td>
               <td>{location.stateOrProvince}</td>
+              <td>{location.postalCode}</td>
               <td>{location.country}</td>
               <td>
                 <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleEditClick(location)}>
@@ -175,6 +180,15 @@ export function Locations() {
                 type="text"
                 value={formData.stateOrProvince}
                 onChange={(e) => setFormData((prev) => ({ ...prev, stateOrProvince: e.target.value }))}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Postal Code</Form.Label>
+              <Form.Control
+                type="text"
+                value={formData.postalCode}
+                onChange={(e) => setFormData((prev) => ({ ...prev, postalCode: e.target.value }))}
                 required
               />
             </Form.Group>

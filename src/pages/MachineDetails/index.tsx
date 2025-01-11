@@ -91,11 +91,18 @@ export function MachineDetails() {
           </Button>
           <h2>{machine.name}</h2>
           <p className="text-muted">
-            Type: {machine.machineType?.name} | Manufacturer: {machine.manufacturer?.name}
+            <em>
+              {machine.manufacturer?.name} {machine.machineType?.name}
+            </em>
+            <br />
+            {machine.machineLocations[0].location.address1} {machine.machineLocations[0].location.address2}
+            <br />
+            {machine.machineLocations[0].location.city}, {machine.machineLocations[0].location.state}{' '}
+            {machine.machineLocations[0].location.stateOrProvince} {machine.machineLocations[0].location.postalCode}{' '}
+            {machine.machineLocations[0].location.country}
           </p>
         </Col>
       </Row>
-
       <Row>
         <Col>
           <Card>
@@ -111,6 +118,7 @@ export function MachineDetails() {
                   <tr>
                     <th>Name</th>
                     <th>Base Price</th>
+                    <th>Set Price</th>
                     <th>Quantity</th>
                     <th>Actions</th>
                   </tr>
@@ -120,6 +128,7 @@ export function MachineDetails() {
                     <tr key={machineItem.id}>
                       <td>{machineItem.item?.name}</td>
                       <td>${machineItem.item?.basePrice?.toFixed(2)}</td>
+                      <td>{machineItem.setPrice ? `$${machineItem.setPrice.toFixed(2)}` : '-'}</td>
                       <td>{machineItem.quantity}</td>
                       <td>
                         <Button

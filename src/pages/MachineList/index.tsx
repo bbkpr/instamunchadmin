@@ -5,15 +5,35 @@ import { Machine } from '@/generated/graphql';
 import { useNavigate } from 'react-router';
 
 interface MachineFormData {
-  name: string;
+  /** Selected `locationId`.
+   *
+   * **Omit this from the `UpdateMachine` Mutation!** */
+  locationId?: string;
+  /** `id` of the `MachineLocation` representing this Machine's main Location. In the future, multiple Locations
+   * per machine will be supported, so we will need to tweak this form then.
+   *
+   * **Omit this from the `UpdateMachine` Mutation!** */
+  machineLocationId?: string;
   machineTypeId: string;
   manufacturerId: string;
+  name: string;
 }
 
 export function MachineList() {
   const navigate = useNavigate();
-  const { machines, machineTypes, machineManufacturers, loading, error, createMachine, updateMachine, deleteMachine } =
-    useMachines();
+  const {
+    locations,
+    machines,
+    machineTypes,
+    machineManufacturers,
+    loading,
+    error,
+    createMachine,
+    updateMachine,
+    deleteMachine,
+    createMachineLocation,
+    updateMachineLocation
+  } = useMachines();
 
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -21,17 +41,21 @@ export function MachineList() {
   const [selectedMachine, setSelectedMachine] = useState<Machine | null>(null);
   const [selectedMachineItems, setSelectedMachineItems] = useState<Machine | null>(null);
   const [formData, setFormData] = useState<MachineFormData>({
-    name: '',
+    locationId: '',
+    machineLocationId: '',
     machineTypeId: '',
-    manufacturerId: ''
+    manufacturerId: '',
+    name: ''
   });
 
   const handleEditClick = (machine: Machine) => {
     setSelectedMachine(machine);
     setFormData({
-      name: machine.name,
+      locationId: machine.machineLocations?.[0]?.location?.id,
+      machineLocationId: machine.machineLocations?.[0]?.id,
       machineTypeId: machine.machineType!.id,
-      manufacturerId: machine.manufacturer!.id
+      manufacturerId: machine.manufacturer!.id,
+      name: machine.name
     });
     setShowEditModal(true);
   };
@@ -45,10 +69,31 @@ export function MachineList() {
     e.preventDefault();
     try {
       if (selectedMachine) {
+        console.log(
+          'handleFormSubmit selectedMachine',
+          selectedMachine,
+          'formData',
+          formData,
+          'selectedMachine.machineLocations?.[0]?.location?.id',
+          selectedMachine.machineLocations?.[0]?.location?.id
+        );
         await updateMachine({
           id: selectedMachine.id,
           ...formData
         });
+
+        // If the MachineLocation `id` is different, update the 1 MachineLocation (multiple MachineLocations will be supported in the future)
+        if (
+          formData.locationId &&
+          formData.machineLocationId &&
+          formData.locationId !== selectedMachine.machineLocations?.[0]?.location?.id
+        ) {
+          await updateMachineLocation({
+            id: formData.machineLocationId,
+            machineId: selectedMachine.id,
+            locationId: formData.locationId
+          });
+        }
       } else {
         await createMachine(formData);
       }
@@ -56,6 +101,8 @@ export function MachineList() {
       setSelectedMachine(null);
       setFormData({
         name: '',
+        locationId: '',
+        machineLocationId: '',
         machineTypeId: '',
         manufacturerId: ''
       });
@@ -109,7 +156,13 @@ export function MachineList() {
           onClick={() => {
             setSelectedMachine(null);
             setShowEditModal(true);
-            setFormData(() => ({ name: '', machineTypeId: '', manufacturerId: '' }));
+            setFormData(() => ({
+              name: '',
+              machineTypeId: '',
+              manufacturerId: '',
+              machineLocationId: '',
+              locationId: ''
+            }));
           }}
         >
           Add Machine
@@ -210,6 +263,23 @@ export function MachineList() {
                         </option>
                       ))
                   : null}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label>Location</Form.Label>
+              <Form.Select
+                value={formData.locationId}
+                onChange={(e) => setFormData((prev) => ({ ...prev, locationId: e.target.value }))}
+              >
+                <option value="">Select a location...</option>
+                {locations.map((location) => (
+                  <option key={location.id} value={location.id}>
+                    {location.address1}
+                    {location.address2 ? ` ${location.address2}` : ''}, {location.city}, {location.stateOrProvince}{' '}
+                    {location.postalCode}
+                  </option>
+                ))}
               </Form.Select>
             </Form.Group>
           </Modal.Body>

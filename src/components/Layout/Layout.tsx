@@ -19,7 +19,7 @@ export function Layout({ children }: LayoutProps) {
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link as={Link} to="/" active={location.pathname === '/'}>
+              <Nav.Link as={Link} to="/" active={location.pathname === '/machines'}>
                 Machines
               </Nav.Link>
               <Nav.Link as={Link} to="/locations" active={location.pathname === '/locations'}>

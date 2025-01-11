@@ -25,6 +25,7 @@ type MachineItem {
   id: ID!
   "Optional override for item name in specific machine"
   name: String
+  setPrice: Float
   quantity: Int!
   machineId: ID!
   machine: Machine
@@ -68,6 +69,7 @@ type Location {
   address2: String
   city: String!
   stateOrProvince: String!
+  postalCode: String!
   country: String!
   createdAt: String!
   updatedAt: String!
@@ -154,6 +156,7 @@ input CreateLocationInput {
   address2: String
   city: String!
   stateOrProvince: String!
+  postalCode: String!
   country: String!
 }
 
@@ -163,6 +166,7 @@ input UpdateLocationInput {
   address2: String
   city: String
   stateOrProvince: String
+  postalCode: String!
   country: String
 }
 
@@ -184,6 +188,7 @@ input CreateMachineItemInput {
   itemId: ID!
   name: String
   quantity: Int!
+  setPrice: Float
 }
 
 input CreateMachineManufacturerInput {
