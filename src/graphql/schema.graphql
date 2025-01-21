@@ -6,6 +6,67 @@ interface MutationResponse {
   success: Boolean!
   "Human-readable status message"
   message: String!
+  "If ACL permission was denied for this operation"
+  permissionDenied: Boolean
+}
+
+enum PermissionOperator {
+  AND # User must have all permissions
+  OR # User must have at least one permission
+}
+
+directive @requirePermission(
+  permissions: [Permission!]!
+  operator: PermissionOperator = AND # Optional operator for combining permissions
+) on FIELD_DEFINITION
+
+"Auth Roles"
+enum Role {
+  TECHNICIAN
+  OPERATOR
+  ADMINISTRATOR
+}
+
+"Auth Permissions"
+enum Permission {
+  # Technician permissions
+  CREATE_MACHINE_ITEMS
+  DELETE_MACHINE_ITEMS
+  READ_ITEMS
+  READ_MACHINE_ITEMS
+  READ_MACHINE_TYPES
+  READ_MACHINE_LOCATIONS
+  READ_MACHINE_MANUFACTURERS
+  READ_MACHINES
+  READ_LOCATIONS
+  READ_USERS
+  UPDATE_MACHINE_ITEMS
+
+  # Operator permissions
+  CREATE_ITEMS
+  CREATE_MACHINES
+  UPDATE_ITEMS
+  UPDATE_MACHINES
+  UPDATE_MACHINE_PRICES
+  UPDATE_USERS
+
+  # Administrator permissions
+  CREATE_LOCATIONS
+  CREATE_MACHINE_LOCATIONS
+  CREATE_MACHINE_MANUFACTURERS
+  CREATE_MACHINE_TYPES
+  CREATE_USERS
+  DELETE_ITEMS
+  DELETE_LOCATIONS
+  DELETE_MACHINE_LOCATIONS
+  DELETE_MACHINE_MANUFACTURERS
+  DELETE_MACHINE_TYPES
+  DELETE_MACHINES
+  DELETE_USERS
+  UPDATE_LOCATIONS
+  UPDATE_MACHINE_LOCATIONS
+  UPDATE_MACHINE_MANUFACTURERS
+  UPDATE_MACHINE_TYPES
 }
 
 type Item {
@@ -25,7 +86,6 @@ type MachineItem {
   id: ID!
   "Optional override for item name in specific machine"
   name: String
-  setPrice: Float
   quantity: Int!
   machineId: ID!
   machine: Machine
@@ -88,49 +148,230 @@ type MachineLocation {
   updatedAt: String!
 }
 
-type Query {
-  "Get all Items, from everywhere"
-  getItems: [Item]
-  "Get Items in a specific Machine"
-  getItemsByMachine(machineId: ID!): [MachineItem!]
-  "Get all Locations, from everywhere"
-  getLocations: [Location]
-  "Get Locations stocking a specific Item"
-  getLocationsByItem(itemId: ID!): [Location!]
-  "Get Locations with a Machine matching a name (case insensitive)"
-  getLocationsByMachineName(machineName: String!): [Location!]!
-
-  getMachine(machineId: ID!): Machine
-  "Get all Machines, from everywhere"
-  getMachines: [Machine]
-  "Get all MachineLocations"
-  getMachineLocations: [MachineLocation!]
-  "Get a MachineManufacturer by ID"
-  getMachineManufacturer(id: ID!): MachineManufacturer
-  "Get all MachineManufacturers"
-  getMachineManufacturers: [MachineManufacturer!]!
-  "Get a MachineType by ID"
-  getMachineType(id: ID!): MachineType
-  "Get all MachineTypes"
-  getMachineTypes: [MachineType!]!
-  "Get all Machines stocking a specific Item"
-  getMachinesByItem(itemId: ID!): [MachineItem!]
-  "Get Machines at a specific Location"
-  getMachinesByLocation(locationId: ID!): [Machine!]
-  "Get all MachineItems, from everywhere"
-  getMachineItems: [MachineItem]
+type User {
+  id: ID!
+  email: String!
+  name: String!
+  role: Role!
+  createdAt: String!
+  updatedAt: String!
 }
 
-#
-# Mutation
-#
+type Query {
+  "Get the currently logged in User"
+  me: User @requirePermission(permissions: [READ_USERS])
 
+  "Get all Items, from everywhere"
+  getItems: [Item]
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+  "Get Items in a specific Machine"
+  getItemsByMachine(machineId: ID!): [MachineItem!]
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+  "Get all Locations, from everywhere"
+  getLocations: [Location]
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+  "Get Locations stocking a specific Item"
+  getLocationsByItem(itemId: ID!): [Location!]
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+  "Get Locations with a Machine matching a name (case insensitive)"
+  getLocationsByMachineName(machineName: String!): [Location!]!
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+
+  getMachine(machineId: ID!): Machine
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+  "Get all Machines, from everywhere"
+  getMachines: [Machine]
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+  "Get all MachineLocations"
+  getMachineLocations: [MachineLocation!]
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+  "Get a MachineManufacturer by ID"
+  getMachineManufacturer(id: ID!): MachineManufacturer
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+  "Get all MachineManufacturers"
+  getMachineManufacturers: [MachineManufacturer!]!
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+  "Get a MachineType by ID"
+  getMachineType(id: ID!): MachineType
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+  "Get all MachineTypes"
+  getMachineTypes: [MachineType!]!
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+  "Get all Machines stocking a specific Item"
+  getMachinesByItem(itemId: ID!): [MachineItem!]
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+  "Get Machines at a specific Location"
+  getMachinesByLocation(locationId: ID!): [Machine!]
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+  "Get all MachineItems, from everywhere"
+  getMachineItems: [MachineItem]
+    @requirePermission(
+      permissions: [
+        READ_ITEMS
+        READ_LOCATIONS
+        READ_MACHINE_ITEMS
+        READ_MACHINE_LOCATIONS
+        READ_MACHINE_MANUFACTURERS
+        READ_MACHINE_TYPES
+        READ_MACHINES
+      ]
+    )
+}
+
+"Log in"
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+"Create Item"
 input CreateItemInput {
   name: String!
   basePrice: Float!
   expirationPeriod: Int!
 }
 
+"Update Item"
 input UpdateItemInput {
   id: ID!
   name: String
@@ -138,12 +379,14 @@ input UpdateItemInput {
   expirationPeriod: Int
 }
 
+"Create Machine"
 input CreateMachineInput {
   name: String!
   machineTypeId: ID!
   manufacturerId: ID!
 }
 
+"Update Machine"
 input UpdateMachineInput {
   id: ID!
   name: String
@@ -151,6 +394,7 @@ input UpdateMachineInput {
   manufacturerId: ID
 }
 
+"Create Location"
 input CreateLocationInput {
   address1: String!
   address2: String
@@ -160,6 +404,7 @@ input CreateLocationInput {
   country: String!
 }
 
+"Update Location"
 input UpdateLocationInput {
   id: ID!
   address1: String
@@ -170,12 +415,14 @@ input UpdateLocationInput {
   country: String
 }
 
+"Assign a Machine to a Location"
 input CreateMachineLocationInput {
   name: String!
   machineId: ID!
   locationId: ID!
 }
 
+"Update a MachineLocation relation"
 input UpdateMachineLocationInput {
   id: ID!
   name: String
@@ -183,6 +430,7 @@ input UpdateMachineLocationInput {
   locationId: ID
 }
 
+"Assign an Item to a Machine"
 input CreateMachineItemInput {
   machineId: ID!
   itemId: ID!
@@ -191,30 +439,45 @@ input CreateMachineItemInput {
   setPrice: Float
 }
 
+"Create a Manufacturer"
 input CreateMachineManufacturerInput {
   name: String!
 }
 
+"Update a Manufacturer"
 input UpdateMachineManufacturerInput {
   id: ID!
   name: String!
 }
 
+"Create a MachineType"
 input CreateMachineTypeInput {
   name: String!
   manufacturerId: ID!
 }
 
+"Update a MachineType"
 input UpdateMachineTypeInput {
   id: ID!
   name: String
   manufacturerId: ID
 }
 
+"Login Mutation Response"
+type LoginResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  permissionDenied: Boolean
+  token: String
+  user: User
+}
+
 type CreateItemMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
   item: Item
 }
 
@@ -222,6 +485,7 @@ type UpdateItemMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
   item: Item
 }
 
@@ -229,6 +493,7 @@ type DeleteItemMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
 }
 
 type CreateMachineMutationResponse implements MutationResponse {
@@ -236,6 +501,7 @@ type CreateMachineMutationResponse implements MutationResponse {
   success: Boolean!
   message: String!
   machine: Machine
+  permissionDenied: Boolean
 }
 
 type UpdateMachineMutationResponse implements MutationResponse {
@@ -243,18 +509,21 @@ type UpdateMachineMutationResponse implements MutationResponse {
   success: Boolean!
   message: String!
   machine: Machine
+  permissionDenied: Boolean
 }
 
 type DeleteMachineMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
 }
 
 type CreateLocationMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
   location: Location
 }
 
@@ -262,6 +531,7 @@ type UpdateLocationMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
   location: Location
 }
 
@@ -269,12 +539,14 @@ type DeleteLocationMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
 }
 
 type CreateMachineItemMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
   machineItem: MachineItem
 }
 
@@ -282,12 +554,14 @@ type DeleteMachineItemMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
 }
 
 type UpdateMachineItemsMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
   machineItems: [MachineItem]
 }
 
@@ -295,6 +569,7 @@ type CreateMachineLocationMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
   machineLocation: MachineLocation
 }
 
@@ -302,6 +577,7 @@ type UpdateMachineLocationMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
   machineLocation: MachineLocation
 }
 
@@ -309,12 +585,14 @@ type DeleteMachineLocationMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
 }
 
 type CreateMachineManufacturerMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
   manufacturer: MachineManufacturer
 }
 
@@ -322,6 +600,7 @@ type UpdateMachineManufacturerMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
   manufacturer: MachineManufacturer
 }
 
@@ -329,12 +608,14 @@ type DeleteMachineManufacturerMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
 }
 
 type CreateMachineTypeMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
   machineType: MachineType
 }
 
@@ -342,6 +623,7 @@ type UpdateMachineTypeMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
   machineType: MachineType
 }
 
@@ -349,6 +631,7 @@ type DeleteMachineTypeMutationResponse implements MutationResponse {
   code: String!
   success: Boolean!
   message: String!
+  permissionDenied: Boolean
 }
 
 # Update and overwrite ALL Items in the Machine
@@ -358,37 +641,69 @@ input UpdateMachineItemsInput {
 }
 
 type Mutation {
-  createItem(input: CreateItemInput!): CreateItemMutationResponse!
-  updateItem(input: UpdateItemInput!): UpdateItemMutationResponse!
-  deleteItem(id: ID!): DeleteItemMutationResponse!
+  "Log in and retrieve an auth token"
+  login(input: LoginInput!): LoginResponse!
 
+  "Create a new Item"
+  createItem(input: CreateItemInput!): CreateItemMutationResponse! @requirePermission(permissions: [CREATE_ITEMS])
+  "Update an existing Item"
+  updateItem(input: UpdateItemInput!): UpdateItemMutationResponse! @requirePermission(permissions: [UPDATE_ITEMS])
+  "Delete an existing Item"
+  deleteItem(id: ID!): DeleteItemMutationResponse! @requirePermission(permissions: [DELETE_ITEMS])
+
+  "Create a new Machine"
   createMachine(input: CreateMachineInput!): CreateMachineMutationResponse!
-  updateMachine(input: UpdateMachineInput!): CreateMachineMutationResponse!
-  deleteMachine(id: ID!): DeleteMachineMutationResponse!
+    @requirePermission(permissions: [CREATE_MACHINES])
+  "Update an existing Machine"
+  updateMachine(input: UpdateMachineInput!): UpdateMachineMutationResponse!
+    @requirePermission(permissions: [UPDATE_MACHINES])
+  "Delete a Machine"
+  deleteMachine(id: ID!): DeleteMachineMutationResponse! @requirePermission(permissions: [DELETE_MACHINES])
 
+  "Add an Item to a Machine"
   createMachineItem(input: CreateMachineItemInput!): CreateMachineItemMutationResponse!
+    @requirePermission(permissions: [CREATE_MACHINE_ITEMS])
+  "Update all MachineItems (be VERY careful with this)"
   updateMachineItems(input: UpdateMachineItemsInput!): UpdateMachineItemsMutationResponse!
-  deleteMachineItem(id: ID!): DeleteMachineItemMutationResponse!
+    @requirePermission(permissions: [UPDATE_MACHINE_ITEMS])
+  "Delete an Item from a Machine"
+  deleteMachineItem(id: ID!): DeleteMachineItemMutationResponse! @requirePermission(permissions: [DELETE_MACHINE_ITEMS])
 
   "Assign a Machine to a Location"
   createMachineLocation(input: CreateMachineLocationInput!): CreateMachineLocationMutationResponse!
+    @requirePermission(permissions: [CREATE_MACHINES])
   "Update a MachineLocation relation"
   updateMachineLocation(input: UpdateMachineLocationInput!): UpdateMachineLocationMutationResponse!
+    @requirePermission(permissions: [UPDATE_MACHINES])
   "Delete a MachineLocation relation"
   deleteMachineLocation(id: ID!): DeleteMachineLocationMutationResponse!
+    @requirePermission(permissions: [DELETE_MACHINES])
 
+  "Assign a Machine to a Manufacturer"
   createMachineManufacturer(input: CreateMachineManufacturerInput!): CreateMachineManufacturerMutationResponse!
+    @requirePermission(permissions: [CREATE_MACHINE_MANUFACTURERS])
+  "Update a MachineManufacturer relation"
   updateMachineManufacturer(input: UpdateMachineManufacturerInput!): UpdateMachineManufacturerMutationResponse!
+    @requirePermission(permissions: [UPDATE_MACHINE_MANUFACTURERS])
+  "Delete a MachineManufacturer relation"
   deleteMachineManufacturer(id: ID!): DeleteMachineManufacturerMutationResponse!
+    @requirePermission(permissions: [DELETE_MACHINE_MANUFACTURERS])
 
+  "Create a new Location"
   createLocation(input: CreateLocationInput!): CreateLocationMutationResponse!
+    @requirePermission(permissions: [CREATE_LOCATIONS])
+  "Update a Location"
   updateLocation(input: UpdateLocationInput!): UpdateLocationMutationResponse!
-  deleteLocation(id: ID!): DeleteLocationMutationResponse!
+    @requirePermission(permissions: [UPDATE_LOCATIONS])
+  "Delete a Location"
+  deleteLocation(id: ID!): DeleteLocationMutationResponse! @requirePermission(permissions: [DELETE_LOCATIONS])
 
   "Assign a Machine to a Type"
   createMachineType(input: CreateMachineTypeInput!): CreateMachineTypeMutationResponse!
+    @requirePermission(permissions: [CREATE_MACHINE_TYPES])
   "Update a MachineType relation"
   updateMachineType(input: UpdateMachineTypeInput!): UpdateMachineTypeMutationResponse!
+    @requirePermission(permissions: [UPDATE_MACHINE_TYPES])
   "Delete a MachineType relation"
-  deleteMachineType(id: ID!): DeleteMachineTypeMutationResponse!
+  deleteMachineType(id: ID!): DeleteMachineTypeMutationResponse! @requirePermission(permissions: [DELETE_MACHINE_TYPES])
 }
