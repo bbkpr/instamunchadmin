@@ -3281,7 +3281,7 @@
               "name": null,
               "ofType": {
                 "kind": "OBJECT",
-                "name": "CreateMachineMutationResponse",
+                "name": "UpdateMachineMutationResponse",
                 "ofType": null
               }
             },
@@ -3625,7 +3625,43 @@
             "deprecationReason": null
           },
           {
+            "name": "CREATE_LOCATIONS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "CREATE_MACHINES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CREATE_MACHINE_ITEMS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CREATE_MACHINE_LOCATIONS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CREATE_MACHINE_MANUFACTURERS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CREATE_MACHINE_TYPES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "CREATE_USERS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -3637,25 +3673,43 @@
             "deprecationReason": null
           },
           {
+            "name": "DELETE_LOCATIONS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "DELETE_MACHINES",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "MANAGE_LOCATIONS",
+            "name": "DELETE_MACHINE_ITEMS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "MANAGE_MACHINE_TYPES",
+            "name": "DELETE_MACHINE_LOCATIONS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
-            "name": "MANAGE_MANUFACTURERS",
+            "name": "DELETE_MACHINE_MANUFACTURERS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DELETE_MACHINE_TYPES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "DELETE_USERS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -3679,7 +3733,43 @@
             "deprecationReason": null
           },
           {
+            "name": "READ_MACHINE_ITEMS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "READ_MACHINE_LOCATIONS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "READ_MACHINE_MANUFACTURERS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "READ_MACHINE_TYPES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "READ_USERS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "UPDATE_ITEMS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "UPDATE_LOCATIONS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null
@@ -3697,7 +3787,31 @@
             "deprecationReason": null
           },
           {
+            "name": "UPDATE_MACHINE_LOCATIONS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "UPDATE_MACHINE_MANUFACTURERS",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "UPDATE_MACHINE_PRICES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "UPDATE_MACHINE_TYPES",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "UPDATE_USERS",
             "description": null,
             "isDeprecated": false,
             "deprecationReason": null

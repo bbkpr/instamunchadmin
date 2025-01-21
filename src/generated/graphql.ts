@@ -326,7 +326,7 @@ export type Mutation = {
   /** Update a Location */
   updateLocation: UpdateLocationMutationResponse;
   /** Update an existing Machine */
-  updateMachine: CreateMachineMutationResponse;
+  updateMachine: UpdateMachineMutationResponse;
   /** Update all MachineItems (be VERY careful with this) */
   updateMachineItems: UpdateMachineItemsMutationResponse;
   /** Update a MachineLocation relation */
@@ -439,19 +439,38 @@ export type MutationResponse = {
 /** Auth Permissions */
 export enum Permission {
   CreateItems = 'CREATE_ITEMS',
+  CreateLocations = 'CREATE_LOCATIONS',
   CreateMachines = 'CREATE_MACHINES',
+  CreateMachineItems = 'CREATE_MACHINE_ITEMS',
+  CreateMachineLocations = 'CREATE_MACHINE_LOCATIONS',
+  CreateMachineManufacturers = 'CREATE_MACHINE_MANUFACTURERS',
+  CreateMachineTypes = 'CREATE_MACHINE_TYPES',
+  CreateUsers = 'CREATE_USERS',
   DeleteItems = 'DELETE_ITEMS',
+  DeleteLocations = 'DELETE_LOCATIONS',
   DeleteMachines = 'DELETE_MACHINES',
-  ManageLocations = 'MANAGE_LOCATIONS',
-  ManageMachineTypes = 'MANAGE_MACHINE_TYPES',
-  ManageManufacturers = 'MANAGE_MANUFACTURERS',
+  DeleteMachineItems = 'DELETE_MACHINE_ITEMS',
+  DeleteMachineLocations = 'DELETE_MACHINE_LOCATIONS',
+  DeleteMachineManufacturers = 'DELETE_MACHINE_MANUFACTURERS',
+  DeleteMachineTypes = 'DELETE_MACHINE_TYPES',
+  DeleteUsers = 'DELETE_USERS',
   ReadItems = 'READ_ITEMS',
   ReadLocations = 'READ_LOCATIONS',
   ReadMachines = 'READ_MACHINES',
+  ReadMachineItems = 'READ_MACHINE_ITEMS',
+  ReadMachineLocations = 'READ_MACHINE_LOCATIONS',
+  ReadMachineManufacturers = 'READ_MACHINE_MANUFACTURERS',
+  ReadMachineTypes = 'READ_MACHINE_TYPES',
+  ReadUsers = 'READ_USERS',
   UpdateItems = 'UPDATE_ITEMS',
+  UpdateLocations = 'UPDATE_LOCATIONS',
   UpdateMachines = 'UPDATE_MACHINES',
   UpdateMachineItems = 'UPDATE_MACHINE_ITEMS',
-  UpdateMachinePrices = 'UPDATE_MACHINE_PRICES'
+  UpdateMachineLocations = 'UPDATE_MACHINE_LOCATIONS',
+  UpdateMachineManufacturers = 'UPDATE_MACHINE_MANUFACTURERS',
+  UpdateMachinePrices = 'UPDATE_MACHINE_PRICES',
+  UpdateMachineTypes = 'UPDATE_MACHINE_TYPES',
+  UpdateUsers = 'UPDATE_USERS'
 }
 
 export enum PermissionOperator {
@@ -1277,7 +1296,7 @@ export type MutationResolvers<
     RequireFields<MutationUpdateLocationArgs, 'input'>
   >;
   updateMachine?: Resolver<
-    ResolversTypes['CreateMachineMutationResponse'],
+    ResolversTypes['UpdateMachineMutationResponse'],
     ParentType,
     ContextType,
     RequireFields<MutationUpdateMachineArgs, 'input'>
