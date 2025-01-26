@@ -48,7 +48,6 @@ enum Permission {
   UPDATE_ITEMS
   UPDATE_MACHINES
   UPDATE_MACHINE_PRICES
-  UPDATE_USERS
 
   # Administrator permissions
   CREATE_LOCATIONS
@@ -67,6 +66,7 @@ enum Permission {
   UPDATE_MACHINE_LOCATIONS
   UPDATE_MACHINE_MANUFACTURERS
   UPDATE_MACHINE_TYPES
+  UPDATE_USERS
 }
 
 type Item {
@@ -87,6 +87,7 @@ type MachineItem {
   "Optional override for item name in specific machine"
   name: String
   quantity: Int!
+  setPrice: Float
   machineId: ID!
   machine: Machine
   itemId: ID!
@@ -159,7 +160,7 @@ type User {
 
 type Query {
   "Get the currently logged in User"
-  me: User @requirePermission(permissions: [READ_USERS])
+  me: User
 
   "Get all Items, from everywhere"
   getItems: [Item]
@@ -356,6 +357,10 @@ type Query {
         READ_MACHINES
       ]
     )
+
+  getUsers: [User!]! @requirePermission(permissions: [READ_USERS])
+  getUser(id: ID!): User @requirePermission(permissions: [READ_USERS])
+  getUserPermissions(id: ID!): [String!]! @requirePermission(permissions: [READ_USERS])
 }
 
 "Log in"
@@ -463,7 +468,28 @@ input UpdateMachineTypeInput {
   manufacturerId: ID
 }
 
-"Login Mutation Response"
+# Update and overwrite ALL Items in the Machine
+input UpdateMachineItemsInput {
+  machineId: ID!
+  itemIds: [ID!]!
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
+  name: String!
+  role: Role!
+}
+
+input UpdateUserInput {
+  id: ID!
+  email: String
+  password: String
+  name: String
+  role: Role
+}
+
+"Index Mutation Response"
 type LoginResponse implements MutationResponse {
   code: String!
   success: Boolean!
@@ -634,10 +660,27 @@ type DeleteMachineTypeMutationResponse implements MutationResponse {
   permissionDenied: Boolean
 }
 
-# Update and overwrite ALL Items in the Machine
-input UpdateMachineItemsInput {
-  machineId: ID!
-  itemIds: [ID!]!
+type CreateUserMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  permissionDenied: Boolean
+  user: User
+}
+
+type UpdateUserMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  permissionDenied: Boolean
+  user: User
+}
+
+type DeleteUserMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  permissionDenied: Boolean
 }
 
 type Mutation {
@@ -706,4 +749,11 @@ type Mutation {
     @requirePermission(permissions: [UPDATE_MACHINE_TYPES])
   "Delete a MachineType relation"
   deleteMachineType(id: ID!): DeleteMachineTypeMutationResponse! @requirePermission(permissions: [DELETE_MACHINE_TYPES])
+
+  "Create a new User"
+  createUser(input: CreateUserInput!): CreateUserMutationResponse! @requirePermission(permissions: [CREATE_USERS])
+  "Update a User"
+  updateUser(input: UpdateUserInput!): UpdateUserMutationResponse! @requirePermission(permissions: [UPDATE_USERS])
+  "Delete a User"
+  deleteUser(id: ID!): DeleteUserMutationResponse! @requirePermission(permissions: [DELETE_USERS])
 }

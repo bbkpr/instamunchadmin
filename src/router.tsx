@@ -6,11 +6,29 @@ import { Locations } from '@/pages/Locations';
 import { Layout } from '@/components/Layout/Layout';
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { MachineDetails } from '@/pages/MachineDetails';
+import { UserManagement } from '@/pages/UserManagement';
+import { Login } from '@/pages/Login';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Navigate to="/machines" replace />
+    element: (
+      <Layout>
+        <ErrorBoundary>
+          <Index />
+        </ErrorBoundary>
+      </Layout>
+    )
+  },
+  {
+    path: '/login',
+    element: (
+      <Layout>
+        <ErrorBoundary>
+          <Login />
+        </ErrorBoundary>
+      </Layout>
+    )
   },
   {
     path: '/machines',
@@ -38,6 +56,16 @@ const router = createBrowserRouter([
       <Layout>
         <ErrorBoundary>
           <Locations />
+        </ErrorBoundary>
+      </Layout>
+    )
+  },
+  {
+    path: '/users',
+    element: (
+      <Layout>
+        <ErrorBoundary>
+          <UserManagement />
         </ErrorBoundary>
       </Layout>
     )

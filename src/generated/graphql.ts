@@ -130,6 +130,22 @@ export type CreateMachineTypeMutationResponse = MutationResponse & {
   success: Scalars['Boolean']['output'];
 };
 
+export type CreateUserInput = {
+  email: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  password: Scalars['String']['input'];
+  role: Role;
+};
+
+export type CreateUserMutationResponse = MutationResponse & {
+  __typename?: 'CreateUserMutationResponse';
+  code: Scalars['String']['output'];
+  message: Scalars['String']['output'];
+  permissionDenied?: Maybe<Scalars['Boolean']['output']>;
+  success: Scalars['Boolean']['output'];
+  user?: Maybe<User>;
+};
+
 export type DeleteItemMutationResponse = MutationResponse & {
   __typename?: 'DeleteItemMutationResponse';
   code: Scalars['String']['output'];
@@ -186,6 +202,14 @@ export type DeleteMachineTypeMutationResponse = MutationResponse & {
   success: Scalars['Boolean']['output'];
 };
 
+export type DeleteUserMutationResponse = MutationResponse & {
+  __typename?: 'DeleteUserMutationResponse';
+  code: Scalars['String']['output'];
+  message: Scalars['String']['output'];
+  permissionDenied?: Maybe<Scalars['Boolean']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type Item = {
   __typename?: 'Item';
   /** Default price if no specific pricing policy exists */
@@ -220,7 +244,7 @@ export type LoginInput = {
   password: Scalars['String']['input'];
 };
 
-/** Login Mutation Response */
+/** Index Mutation Response */
 export type LoginResponse = MutationResponse & {
   __typename?: 'LoginResponse';
   code: Scalars['String']['output'];
@@ -253,6 +277,7 @@ export type MachineItem = {
   /** Optional override for item name in specific machine */
   name?: Maybe<Scalars['String']['output']>;
   quantity: Scalars['Int']['output'];
+  setPrice?: Maybe<Scalars['Float']['output']>;
 };
 
 export type MachineLocation = {
@@ -305,6 +330,8 @@ export type Mutation = {
   createMachineManufacturer: CreateMachineManufacturerMutationResponse;
   /** Assign a Machine to a Type */
   createMachineType: CreateMachineTypeMutationResponse;
+  /** Create a new User */
+  createUser: CreateUserMutationResponse;
   /** Delete an existing Item */
   deleteItem: DeleteItemMutationResponse;
   /** Delete a Location */
@@ -319,6 +346,8 @@ export type Mutation = {
   deleteMachineManufacturer: DeleteMachineManufacturerMutationResponse;
   /** Delete a MachineType relation */
   deleteMachineType: DeleteMachineTypeMutationResponse;
+  /** Delete a User */
+  deleteUser: DeleteUserMutationResponse;
   /** Log in and retrieve an auth token */
   login: LoginResponse;
   /** Update an existing Item */
@@ -335,6 +364,8 @@ export type Mutation = {
   updateMachineManufacturer: UpdateMachineManufacturerMutationResponse;
   /** Update a MachineType relation */
   updateMachineType: UpdateMachineTypeMutationResponse;
+  /** Update a User */
+  updateUser: UpdateUserMutationResponse;
 };
 
 export type MutationCreateItemArgs = {
@@ -365,6 +396,10 @@ export type MutationCreateMachineTypeArgs = {
   input: CreateMachineTypeInput;
 };
 
+export type MutationCreateUserArgs = {
+  input: CreateUserInput;
+};
+
 export type MutationDeleteItemArgs = {
   id: Scalars['ID']['input'];
 };
@@ -390,6 +425,10 @@ export type MutationDeleteMachineManufacturerArgs = {
 };
 
 export type MutationDeleteMachineTypeArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type MutationDeleteUserArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -423,6 +462,10 @@ export type MutationUpdateMachineManufacturerArgs = {
 
 export type MutationUpdateMachineTypeArgs = {
   input: UpdateMachineTypeInput;
+};
+
+export type MutationUpdateUserArgs = {
+  input: UpdateUserInput;
 };
 
 export type MutationResponse = {
@@ -509,6 +552,9 @@ export type Query = {
   getMachinesByItem?: Maybe<Array<MachineItem>>;
   /** Get Machines at a specific Location */
   getMachinesByLocation?: Maybe<Array<Machine>>;
+  getUser?: Maybe<User>;
+  getUserPermissions: Array<Scalars['String']['output']>;
+  getUsers: Array<User>;
   /** Get the currently logged in User */
   me?: Maybe<User>;
 };
@@ -543,6 +589,14 @@ export type QueryGetMachinesByItemArgs = {
 
 export type QueryGetMachinesByLocationArgs = {
   locationId: Scalars['ID']['input'];
+};
+
+export type QueryGetUserArgs = {
+  id: Scalars['ID']['input'];
+};
+
+export type QueryGetUserPermissionsArgs = {
+  id: Scalars['ID']['input'];
 };
 
 /** Auth Roles */
@@ -668,6 +722,23 @@ export type UpdateMachineTypeMutationResponse = MutationResponse & {
   success: Scalars['Boolean']['output'];
 };
 
+export type UpdateUserInput = {
+  email?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  password?: InputMaybe<Scalars['String']['input']>;
+  role?: InputMaybe<Role>;
+};
+
+export type UpdateUserMutationResponse = MutationResponse & {
+  __typename?: 'UpdateUserMutationResponse';
+  code: Scalars['String']['output'];
+  message: Scalars['String']['output'];
+  permissionDenied?: Maybe<Scalars['Boolean']['output']>;
+  success: Scalars['Boolean']['output'];
+  user?: Maybe<User>;
+};
+
 export type User = {
   __typename?: 'User';
   createdAt: Scalars['String']['output'];
@@ -758,6 +829,7 @@ export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = 
     | CreateMachineManufacturerMutationResponse
     | CreateMachineMutationResponse
     | CreateMachineTypeMutationResponse
+    | CreateUserMutationResponse
     | DeleteItemMutationResponse
     | DeleteLocationMutationResponse
     | DeleteMachineItemMutationResponse
@@ -765,6 +837,7 @@ export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = 
     | DeleteMachineManufacturerMutationResponse
     | DeleteMachineMutationResponse
     | DeleteMachineTypeMutationResponse
+    | DeleteUserMutationResponse
     | LoginResponse
     | UpdateItemMutationResponse
     | UpdateLocationMutationResponse
@@ -772,7 +845,8 @@ export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = 
     | UpdateMachineLocationMutationResponse
     | UpdateMachineManufacturerMutationResponse
     | UpdateMachineMutationResponse
-    | UpdateMachineTypeMutationResponse;
+    | UpdateMachineTypeMutationResponse
+    | UpdateUserMutationResponse;
 };
 
 /** Mapping between all available schema types and the resolvers types */
@@ -792,6 +866,8 @@ export type ResolversTypes = {
   CreateMachineMutationResponse: ResolverTypeWrapper<CreateMachineMutationResponse>;
   CreateMachineTypeInput: CreateMachineTypeInput;
   CreateMachineTypeMutationResponse: ResolverTypeWrapper<CreateMachineTypeMutationResponse>;
+  CreateUserInput: CreateUserInput;
+  CreateUserMutationResponse: ResolverTypeWrapper<CreateUserMutationResponse>;
   DeleteItemMutationResponse: ResolverTypeWrapper<DeleteItemMutationResponse>;
   DeleteLocationMutationResponse: ResolverTypeWrapper<DeleteLocationMutationResponse>;
   DeleteMachineItemMutationResponse: ResolverTypeWrapper<DeleteMachineItemMutationResponse>;
@@ -799,6 +875,7 @@ export type ResolversTypes = {
   DeleteMachineManufacturerMutationResponse: ResolverTypeWrapper<DeleteMachineManufacturerMutationResponse>;
   DeleteMachineMutationResponse: ResolverTypeWrapper<DeleteMachineMutationResponse>;
   DeleteMachineTypeMutationResponse: ResolverTypeWrapper<DeleteMachineTypeMutationResponse>;
+  DeleteUserMutationResponse: ResolverTypeWrapper<DeleteUserMutationResponse>;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
@@ -832,6 +909,8 @@ export type ResolversTypes = {
   UpdateMachineMutationResponse: ResolverTypeWrapper<UpdateMachineMutationResponse>;
   UpdateMachineTypeInput: UpdateMachineTypeInput;
   UpdateMachineTypeMutationResponse: ResolverTypeWrapper<UpdateMachineTypeMutationResponse>;
+  UpdateUserInput: UpdateUserInput;
+  UpdateUserMutationResponse: ResolverTypeWrapper<UpdateUserMutationResponse>;
   User: ResolverTypeWrapper<User>;
 };
 
@@ -852,6 +931,8 @@ export type ResolversParentTypes = {
   CreateMachineMutationResponse: CreateMachineMutationResponse;
   CreateMachineTypeInput: CreateMachineTypeInput;
   CreateMachineTypeMutationResponse: CreateMachineTypeMutationResponse;
+  CreateUserInput: CreateUserInput;
+  CreateUserMutationResponse: CreateUserMutationResponse;
   DeleteItemMutationResponse: DeleteItemMutationResponse;
   DeleteLocationMutationResponse: DeleteLocationMutationResponse;
   DeleteMachineItemMutationResponse: DeleteMachineItemMutationResponse;
@@ -859,6 +940,7 @@ export type ResolversParentTypes = {
   DeleteMachineManufacturerMutationResponse: DeleteMachineManufacturerMutationResponse;
   DeleteMachineMutationResponse: DeleteMachineMutationResponse;
   DeleteMachineTypeMutationResponse: DeleteMachineTypeMutationResponse;
+  DeleteUserMutationResponse: DeleteUserMutationResponse;
   Float: Scalars['Float']['output'];
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
@@ -889,6 +971,8 @@ export type ResolversParentTypes = {
   UpdateMachineMutationResponse: UpdateMachineMutationResponse;
   UpdateMachineTypeInput: UpdateMachineTypeInput;
   UpdateMachineTypeMutationResponse: UpdateMachineTypeMutationResponse;
+  UpdateUserInput: UpdateUserInput;
+  UpdateUserMutationResponse: UpdateUserMutationResponse;
   User: User;
 };
 
@@ -995,6 +1079,19 @@ export type CreateMachineTypeMutationResponseResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CreateUserMutationResponseResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes['CreateUserMutationResponse'] = ResolversParentTypes['CreateUserMutationResponse']
+> = {
+  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  permissionDenied?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type DeleteItemMutationResponseResolvers<
   ContextType = any,
   ParentType extends
@@ -1079,6 +1176,18 @@ export type DeleteMachineTypeMutationResponseResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type DeleteUserMutationResponseResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes['DeleteUserMutationResponse'] = ResolversParentTypes['DeleteUserMutationResponse']
+> = {
+  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  permissionDenied?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type ItemResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Item'] = ResolversParentTypes['Item']
@@ -1149,6 +1258,7 @@ export type MachineItemResolvers<
   machineId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   quantity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  setPrice?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1240,6 +1350,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationCreateMachineTypeArgs, 'input'>
   >;
+  createUser?: Resolver<
+    ResolversTypes['CreateUserMutationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationCreateUserArgs, 'input'>
+  >;
   deleteItem?: Resolver<
     ResolversTypes['DeleteItemMutationResponse'],
     ParentType,
@@ -1281,6 +1397,12 @@ export type MutationResolvers<
     ParentType,
     ContextType,
     RequireFields<MutationDeleteMachineTypeArgs, 'id'>
+  >;
+  deleteUser?: Resolver<
+    ResolversTypes['DeleteUserMutationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationDeleteUserArgs, 'id'>
   >;
   login?: Resolver<ResolversTypes['LoginResponse'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
   updateItem?: Resolver<
@@ -1325,6 +1447,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationUpdateMachineTypeArgs, 'input'>
   >;
+  updateUser?: Resolver<
+    ResolversTypes['UpdateUserMutationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateUserArgs, 'input'>
+  >;
 };
 
 export type MutationResponseResolvers<
@@ -1339,6 +1467,7 @@ export type MutationResponseResolvers<
     | 'CreateMachineManufacturerMutationResponse'
     | 'CreateMachineMutationResponse'
     | 'CreateMachineTypeMutationResponse'
+    | 'CreateUserMutationResponse'
     | 'DeleteItemMutationResponse'
     | 'DeleteLocationMutationResponse'
     | 'DeleteMachineItemMutationResponse'
@@ -1346,6 +1475,7 @@ export type MutationResponseResolvers<
     | 'DeleteMachineManufacturerMutationResponse'
     | 'DeleteMachineMutationResponse'
     | 'DeleteMachineTypeMutationResponse'
+    | 'DeleteUserMutationResponse'
     | 'LoginResponse'
     | 'UpdateItemMutationResponse'
     | 'UpdateLocationMutationResponse'
@@ -1353,7 +1483,8 @@ export type MutationResponseResolvers<
     | 'UpdateMachineLocationMutationResponse'
     | 'UpdateMachineManufacturerMutationResponse'
     | 'UpdateMachineMutationResponse'
-    | 'UpdateMachineTypeMutationResponse',
+    | 'UpdateMachineTypeMutationResponse'
+    | 'UpdateUserMutationResponse',
     ParentType,
     ContextType
   >;
@@ -1422,6 +1553,14 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryGetMachinesByLocationArgs, 'locationId'>
   >;
+  getUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>;
+  getUserPermissions?: Resolver<
+    Array<ResolversTypes['String']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetUserPermissionsArgs, 'id'>
+  >;
+  getUsers?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
 };
 
@@ -1516,6 +1655,19 @@ export type UpdateMachineTypeMutationResponseResolvers<
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type UpdateUserMutationResponseResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes['UpdateUserMutationResponse'] = ResolversParentTypes['UpdateUserMutationResponse']
+> = {
+  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  permissionDenied?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UserResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']
@@ -1537,6 +1689,7 @@ export type Resolvers<ContextType = any> = {
   CreateMachineManufacturerMutationResponse?: CreateMachineManufacturerMutationResponseResolvers<ContextType>;
   CreateMachineMutationResponse?: CreateMachineMutationResponseResolvers<ContextType>;
   CreateMachineTypeMutationResponse?: CreateMachineTypeMutationResponseResolvers<ContextType>;
+  CreateUserMutationResponse?: CreateUserMutationResponseResolvers<ContextType>;
   DeleteItemMutationResponse?: DeleteItemMutationResponseResolvers<ContextType>;
   DeleteLocationMutationResponse?: DeleteLocationMutationResponseResolvers<ContextType>;
   DeleteMachineItemMutationResponse?: DeleteMachineItemMutationResponseResolvers<ContextType>;
@@ -1544,6 +1697,7 @@ export type Resolvers<ContextType = any> = {
   DeleteMachineManufacturerMutationResponse?: DeleteMachineManufacturerMutationResponseResolvers<ContextType>;
   DeleteMachineMutationResponse?: DeleteMachineMutationResponseResolvers<ContextType>;
   DeleteMachineTypeMutationResponse?: DeleteMachineTypeMutationResponseResolvers<ContextType>;
+  DeleteUserMutationResponse?: DeleteUserMutationResponseResolvers<ContextType>;
   Item?: ItemResolvers<ContextType>;
   Location?: LocationResolvers<ContextType>;
   LoginResponse?: LoginResponseResolvers<ContextType>;
@@ -1562,6 +1716,7 @@ export type Resolvers<ContextType = any> = {
   UpdateMachineManufacturerMutationResponse?: UpdateMachineManufacturerMutationResponseResolvers<ContextType>;
   UpdateMachineMutationResponse?: UpdateMachineMutationResponseResolvers<ContextType>;
   UpdateMachineTypeMutationResponse?: UpdateMachineTypeMutationResponseResolvers<ContextType>;
+  UpdateUserMutationResponse?: UpdateUserMutationResponseResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };
 

@@ -1,4 +1,3 @@
-// pages/MachineDetails.tsx
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { Container, Row, Col, Card, Button, Table, Modal, Form, Spinner } from 'react-bootstrap';
