@@ -193,20 +193,33 @@ export function MachineList() {
                 </Button>
               </td>
               <td>
-                <Button
-                  variant="outline-primary"
-                  size="sm"
-                  className="me-2"
-                  onClick={() => navigate(`/machines/${machine.id}`)}
-                >
-                  Manage Items
-                </Button>
-                <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleEditClick(machine)}>
-                  Edit
-                </Button>
-                <Button variant="outline-danger" size="sm" onClick={() => handleDeleteClick(machine)}>
-                  Delete
-                </Button>
+                <div className="table-button-wrap">
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    className="me-2"
+                    onClick={() => navigate(`/machines/${machine.id}`)}
+                  >
+                    Manage Items
+                  </Button>
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    className="me-2"
+                    onClick={() => handleEditClick(machine)}
+                    aria-description="Edit"
+                  >
+                    ✏
+                  </Button>
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={() => handleDeleteClick(machine)}
+                    aria-description="Delete"
+                  >
+                    ❌
+                  </Button>
+                </div>
               </td>
             </tr>
           ))}

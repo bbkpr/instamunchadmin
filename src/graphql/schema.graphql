@@ -468,6 +468,13 @@ input UpdateMachineTypeInput {
   manufacturerId: ID
 }
 
+"Update a MachineItem"
+input UpdateMachineItemInput {
+  id: ID!
+  quantity: Int
+  setPrice: Float
+}
+
 # Update and overwrite ALL Items in the Machine
 input UpdateMachineItemsInput {
   machineId: ID!
@@ -489,7 +496,7 @@ input UpdateUserInput {
   role: Role
 }
 
-"Index Mutation Response"
+"Login Mutation Response"
 type LoginResponse implements MutationResponse {
   code: String!
   success: Boolean!
@@ -581,6 +588,14 @@ type DeleteMachineItemMutationResponse implements MutationResponse {
   success: Boolean!
   message: String!
   permissionDenied: Boolean
+}
+
+type UpdateMachineItemMutationResponse implements MutationResponse {
+  code: String!
+  success: Boolean!
+  message: String!
+  permissionDenied: Boolean
+  machineItem: MachineItem
 }
 
 type UpdateMachineItemsMutationResponse implements MutationResponse {
@@ -706,6 +721,9 @@ type Mutation {
   "Add an Item to a Machine"
   createMachineItem(input: CreateMachineItemInput!): CreateMachineItemMutationResponse!
     @requirePermission(permissions: [CREATE_MACHINE_ITEMS])
+  "Update a MachineItem"
+  updateMachineItem(input: UpdateMachineItemInput!): UpdateMachineItemMutationResponse!
+    @requirePermission(permissions: [UPDATE_MACHINE_ITEMS])
   "Update all MachineItems (be VERY careful with this)"
   updateMachineItems(input: UpdateMachineItemsInput!): UpdateMachineItemsMutationResponse!
     @requirePermission(permissions: [UPDATE_MACHINE_ITEMS])

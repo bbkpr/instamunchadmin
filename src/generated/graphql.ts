@@ -244,7 +244,7 @@ export type LoginInput = {
   password: Scalars['String']['input'];
 };
 
-/** Index Mutation Response */
+/** Login Mutation Response */
 export type LoginResponse = MutationResponse & {
   __typename?: 'LoginResponse';
   code: Scalars['String']['output'];
@@ -356,6 +356,8 @@ export type Mutation = {
   updateLocation: UpdateLocationMutationResponse;
   /** Update an existing Machine */
   updateMachine: UpdateMachineMutationResponse;
+  /** Update a MachineItem */
+  updateMachineItem: UpdateMachineItemMutationResponse;
   /** Update all MachineItems (be VERY careful with this) */
   updateMachineItems: UpdateMachineItemsMutationResponse;
   /** Update a MachineLocation relation */
@@ -446,6 +448,10 @@ export type MutationUpdateLocationArgs = {
 
 export type MutationUpdateMachineArgs = {
   input: UpdateMachineInput;
+};
+
+export type MutationUpdateMachineItemArgs = {
+  input: UpdateMachineItemInput;
 };
 
 export type MutationUpdateMachineItemsArgs = {
@@ -651,6 +657,22 @@ export type UpdateMachineInput = {
   name?: InputMaybe<Scalars['String']['input']>;
 };
 
+/** Update a MachineItem */
+export type UpdateMachineItemInput = {
+  id: Scalars['ID']['input'];
+  quantity?: InputMaybe<Scalars['Int']['input']>;
+  setPrice?: InputMaybe<Scalars['Float']['input']>;
+};
+
+export type UpdateMachineItemMutationResponse = MutationResponse & {
+  __typename?: 'UpdateMachineItemMutationResponse';
+  code: Scalars['String']['output'];
+  machineItem?: Maybe<MachineItem>;
+  message: Scalars['String']['output'];
+  permissionDenied?: Maybe<Scalars['Boolean']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
 export type UpdateMachineItemsInput = {
   itemIds: Array<Scalars['ID']['input']>;
   machineId: Scalars['ID']['input'];
@@ -841,6 +863,7 @@ export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = 
     | LoginResponse
     | UpdateItemMutationResponse
     | UpdateLocationMutationResponse
+    | UpdateMachineItemMutationResponse
     | UpdateMachineItemsMutationResponse
     | UpdateMachineLocationMutationResponse
     | UpdateMachineManufacturerMutationResponse
@@ -900,6 +923,8 @@ export type ResolversTypes = {
   UpdateLocationInput: UpdateLocationInput;
   UpdateLocationMutationResponse: ResolverTypeWrapper<UpdateLocationMutationResponse>;
   UpdateMachineInput: UpdateMachineInput;
+  UpdateMachineItemInput: UpdateMachineItemInput;
+  UpdateMachineItemMutationResponse: ResolverTypeWrapper<UpdateMachineItemMutationResponse>;
   UpdateMachineItemsInput: UpdateMachineItemsInput;
   UpdateMachineItemsMutationResponse: ResolverTypeWrapper<UpdateMachineItemsMutationResponse>;
   UpdateMachineLocationInput: UpdateMachineLocationInput;
@@ -962,6 +987,8 @@ export type ResolversParentTypes = {
   UpdateLocationInput: UpdateLocationInput;
   UpdateLocationMutationResponse: UpdateLocationMutationResponse;
   UpdateMachineInput: UpdateMachineInput;
+  UpdateMachineItemInput: UpdateMachineItemInput;
+  UpdateMachineItemMutationResponse: UpdateMachineItemMutationResponse;
   UpdateMachineItemsInput: UpdateMachineItemsInput;
   UpdateMachineItemsMutationResponse: UpdateMachineItemsMutationResponse;
   UpdateMachineLocationInput: UpdateMachineLocationInput;
@@ -1423,6 +1450,12 @@ export type MutationResolvers<
     ContextType,
     RequireFields<MutationUpdateMachineArgs, 'input'>
   >;
+  updateMachineItem?: Resolver<
+    ResolversTypes['UpdateMachineItemMutationResponse'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationUpdateMachineItemArgs, 'input'>
+  >;
   updateMachineItems?: Resolver<
     ResolversTypes['UpdateMachineItemsMutationResponse'],
     ParentType,
@@ -1479,6 +1512,7 @@ export type MutationResponseResolvers<
     | 'LoginResponse'
     | 'UpdateItemMutationResponse'
     | 'UpdateLocationMutationResponse'
+    | 'UpdateMachineItemMutationResponse'
     | 'UpdateMachineItemsMutationResponse'
     | 'UpdateMachineLocationMutationResponse'
     | 'UpdateMachineManufacturerMutationResponse'
@@ -1584,6 +1618,19 @@ export type UpdateLocationMutationResponseResolvers<
 > = {
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   location?: Resolver<Maybe<ResolversTypes['Location']>, ParentType, ContextType>;
+  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  permissionDenied?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type UpdateMachineItemMutationResponseResolvers<
+  ContextType = any,
+  ParentType extends
+    ResolversParentTypes['UpdateMachineItemMutationResponse'] = ResolversParentTypes['UpdateMachineItemMutationResponse']
+> = {
+  code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  machineItem?: Resolver<Maybe<ResolversTypes['MachineItem']>, ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   permissionDenied?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
@@ -1711,6 +1758,7 @@ export type Resolvers<ContextType = any> = {
   Query?: QueryResolvers<ContextType>;
   UpdateItemMutationResponse?: UpdateItemMutationResponseResolvers<ContextType>;
   UpdateLocationMutationResponse?: UpdateLocationMutationResponseResolvers<ContextType>;
+  UpdateMachineItemMutationResponse?: UpdateMachineItemMutationResponseResolvers<ContextType>;
   UpdateMachineItemsMutationResponse?: UpdateMachineItemsMutationResponseResolvers<ContextType>;
   UpdateMachineLocationMutationResponse?: UpdateMachineLocationMutationResponseResolvers<ContextType>;
   UpdateMachineManufacturerMutationResponse?: UpdateMachineManufacturerMutationResponseResolvers<ContextType>;

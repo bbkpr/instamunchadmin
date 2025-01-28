@@ -73,33 +73,37 @@ export function UserManagement() {
                 </div>
               </td>
               <td>
-                <Button
-                  variant="outline-primary"
-                  size="sm"
-                  className="me-2"
-                  onClick={() => {
-                    setSelectedUser(user);
-                    setFormData({
-                      email: user.email,
-                      password: '',
-                      name: user.name,
-                      role: user.role
-                    });
-                    setShowEditModal(true);
-                  }}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="outline-danger"
-                  size="sm"
-                  onClick={() => {
-                    setSelectedUser(user);
-                    setShowDeleteModal(true);
-                  }}
-                >
-                  Delete
-                </Button>
+                <div className="table-button-wrap">
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    className="me-2"
+                    onClick={() => {
+                      setSelectedUser(user);
+                      setFormData({
+                        email: user.email,
+                        password: '',
+                        name: user.name,
+                        role: user.role
+                      });
+                      setShowEditModal(true);
+                    }}
+                    aria-description="Edit"
+                  >
+                    ✏
+                  </Button>
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={() => {
+                      setSelectedUser(user);
+                      setShowDeleteModal(true);
+                    }}
+                    aria-description="Delete"
+                  >
+                    ❌
+                  </Button>
+                </div>
               </td>
             </tr>
           ))}

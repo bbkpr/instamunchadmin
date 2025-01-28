@@ -129,12 +129,25 @@ export function Locations() {
               <td>{location.postalCode}</td>
               <td>{location.country}</td>
               <td>
-                <Button variant="outline-primary" size="sm" className="me-2" onClick={() => handleEditClick(location)}>
-                  Edit
-                </Button>
-                <Button variant="outline-danger" size="sm" onClick={() => handleDeleteClick(location)}>
-                  Delete
-                </Button>
+                <div className="table-button-wrap">
+                  <Button
+                    variant="outline-primary"
+                    size="sm"
+                    className="me-2"
+                    aria-description="Edit"
+                    onClick={() => handleEditClick(location)}
+                  >
+                    ✏
+                  </Button>
+                  <Button
+                    variant="outline-danger"
+                    size="sm"
+                    onClick={() => handleDeleteClick(location)}
+                    aria-description="Delete"
+                  >
+                    ❌
+                  </Button>
+                </div>
               </td>
             </tr>
           ))}

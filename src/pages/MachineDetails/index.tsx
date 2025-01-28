@@ -8,6 +8,7 @@ interface ItemFormData {
   itemId: string;
   quantity: number;
   name?: string;
+  setPrice?: number;
 }
 
 export function MachineDetails() {
@@ -83,27 +84,46 @@ export function MachineDetails() {
 
   return (
     <Container className="py-4" fluid>
+      <Button variant="secondary" onClick={() => navigate('/machines')} className="mb-3">
+        ← Back to Machines
+      </Button>
       <Row className="mb-4">
-        <Col>
-          <Button variant="secondary" onClick={() => navigate('/machines')} className="mb-3">
-            ← Back to Machines
-          </Button>
-          <h2>{machine.name}</h2>
-          <p className="text-muted">
-            <em>
-              {machine.manufacturer?.name} {machine.machineType?.name}
-            </em>
-            <br />
-            {machine.machineLocations[0].location.address1} {machine.machineLocations[0].location.address2}
-            <br />
-            {machine.machineLocations[0].location.city}, {machine.machineLocations[0].location.state}{' '}
-            {machine.machineLocations[0].location.stateOrProvince} {machine.machineLocations[0].location.postalCode}{' '}
-            {machine.machineLocations[0].location.country}
-          </p>
+        <Col md={4}>
+          <Card>
+            <Card.Body>
+              <h2>{machine.name}</h2>
+              <p className="text-muted">
+                <em>
+                  {machine.manufacturer?.name} {machine.machineType?.name}
+                </em>
+                <br />
+                {machine.machineLocations[0].location.address1} {machine.machineLocations[0].location.address2}
+                <br />
+                {machine.machineLocations[0].location.city}, {machine.machineLocations[0].location.state}{' '}
+                {machine.machineLocations[0].location.stateOrProvince} {machine.machineLocations[0].location.postalCode}{' '}
+                {machine.machineLocations[0].location.country}
+              </p>
+
+              {/*{machine.images && machine.images.length > 0 && (*/}
+              {/*  <div className="mt-4">*/}
+              {/*    <h5>Machine Images</h5>*/}
+              {/*    <div className="d-flex flex-wrap gap-2">*/}
+              {/*      {machine.images.map((image, index) => (*/}
+              {/*        <img*/}
+              {/*          key={index}*/}
+              {/*          src={image.url}*/}
+              {/*          alt={`${machine.name} - ${index + 1}`}*/}
+              {/*          className="img-thumbnail"*/}
+              {/*          style={{ width: '150px', height: '150px', objectFit: 'cover' }}*/}
+              {/*        />*/}
+              {/*      ))}*/}
+              {/*    </div>*/}
+              {/*  </div>*/}
+              {/*)}*/}
+            </Card.Body>
+          </Card>
         </Col>
-      </Row>
-      <Row>
-        <Col>
+        <Col md={8}>
           <Card>
             <Card.Header className="d-flex justify-content-between align-items-center">
               <h5 className="mb-0">Items</h5>
@@ -130,31 +150,35 @@ export function MachineDetails() {
                       <td>{machineItem.setPrice ? `$${machineItem.setPrice.toFixed(2)}` : '-'}</td>
                       <td>{machineItem.quantity}</td>
                       <td>
-                        <Button
-                          variant="outline-primary"
-                          size="sm"
-                          className="me-2"
-                          onClick={() => {
-                            setSelectedItem(machineItem);
-                            setFormData({
-                              itemId: machineItem.item!.id,
-                              quantity: machineItem.quantity
-                            });
-                            setShowEditItemModal(true);
-                          }}
-                        >
-                          Edit
-                        </Button>
-                        <Button
-                          variant="outline-danger"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedItem(machineItem);
-                            setShowDeleteItemModal(true);
-                          }}
-                        >
-                          Remove
-                        </Button>
+                        <div className="table-button-wrap">
+                          <Button
+                            variant="outline-primary"
+                            size="sm"
+                            className="me-2"
+                            onClick={() => {
+                              setSelectedItem(machineItem);
+                              setFormData({
+                                itemId: machineItem.item!.id,
+                                quantity: machineItem.quantity
+                              });
+                              setShowEditItemModal(true);
+                            }}
+                            aria-description="Edit"
+                          >
+                            ✏
+                          </Button>
+                          <Button
+                            variant="outline-danger"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedItem(machineItem);
+                              setShowDeleteItemModal(true);
+                            }}
+                            aria-description="Delete"
+                          >
+                            ❌
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}
