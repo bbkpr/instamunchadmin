@@ -336,6 +336,7 @@ export function MachineList() {
               <tr>
                 <th>Name</th>
                 <th>Base Price</th>
+                <th>Set Price</th>
                 <th>Expiration Period</th>
                 <th>Quantity</th>
               </tr>
@@ -345,6 +346,7 @@ export function MachineList() {
                 <tr key={machineItem!.id}>
                   <td>{machineItem!.item?.name}</td>
                   <td>${machineItem!.item?.basePrice?.toFixed(2)}</td>
+                  <td>${machineItem!.setPrice?.toFixed(2)}</td>
                   <td>{machineItem!.item?.expirationPeriod} days</td>
                   <td>{machineItem!.quantity}</td>
                 </tr>

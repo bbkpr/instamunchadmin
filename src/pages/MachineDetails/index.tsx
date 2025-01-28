@@ -14,9 +14,8 @@ interface ItemFormData {
 export function MachineDetails() {
   const { machineId } = useParams();
   const navigate = useNavigate();
-  const { machine, items, loading, error, addMachineItem, updateMachineItems, deleteMachineItem } = useMachine(
-    machineId!
-  );
+  const { machine, items, loading, error, addMachineItem, updateMachineItem, updateMachineItems, deleteMachineItem } =
+    useMachine(machineId!);
 
   const [showAddItemModal, setShowAddItemModal] = useState(false);
   const [showEditItemModal, setShowEditItemModal] = useState(false);
@@ -48,7 +47,7 @@ export function MachineDetails() {
     try {
       await addMachineItem(formData);
       setShowAddItemModal(false);
-      setFormData({ itemId: '', quantity: 0 });
+      setFormData({ itemId: '', quantity: 0, setPrice: undefined });
     } catch (err) {
       console.error('Error adding item:', err);
     }
@@ -57,15 +56,14 @@ export function MachineDetails() {
   const handleEditItem = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await updateMachineItems(machine.id, [
-        {
-          id: selectedItem.id,
-          quantity: formData.quantity
-        }
-      ]);
+      await updateMachineItem({
+        id: selectedItem.id,
+        quantity: formData.quantity,
+        setPrice: formData.setPrice
+      });
       setShowEditItemModal(false);
       setSelectedItem(null);
-      setFormData({ itemId: '', quantity: 0 });
+      setFormData({ itemId: '', quantity: 0, setPrice: undefined });
     } catch (err) {
       console.error('Error updating item:', err);
     }
@@ -159,6 +157,7 @@ export function MachineDetails() {
                               setSelectedItem(machineItem);
                               setFormData({
                                 itemId: machineItem.item!.id,
+                                setPrice: machineItem.setPrice!,
                                 quantity: machineItem.quantity
                               });
                               setShowEditItemModal(true);
@@ -228,6 +227,21 @@ export function MachineDetails() {
                 required
               />
             </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Set Price (Optional)</Form.Label>
+              <Form.Control
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.setPrice || ''}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    setPrice: e.target.value ? parseFloat(e.target.value) : undefined
+                  }))
+                }
+              />
+            </Form.Group>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setShowAddItemModal(false)}>
@@ -255,6 +269,22 @@ export function MachineDetails() {
                 value={formData.quantity}
                 onChange={(e) => setFormData((prev) => ({ ...prev, quantity: parseInt(e.target.value) }))}
                 required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Set Price (Optional)</Form.Label>
+              <Form.Control
+                type="number"
+                step="0.01"
+                min="0"
+                value={formData.setPrice || ''}
+                onChange={(e) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    setPrice: e.target.value ? parseFloat(e.target.value) : undefined
+                  }))
+                }
+                placeholder={` Default: $${selectedItem?.item?.basePrice?.toFixed(2)}`}
               />
             </Form.Group>
           </Modal.Body>

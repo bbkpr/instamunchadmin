@@ -45,6 +45,7 @@ export const GET_MACHINE = gql`
         id
         name
         quantity
+        setPrice
         item {
           id
           name
@@ -92,6 +93,7 @@ export const GET_MACHINES = gql`
         id
         name
         quantity
+        setPrice
         item {
           id
           name
@@ -135,6 +137,7 @@ export const UPDATE_MACHINE = gql`
           id
           name
           quantity
+          setPrice
           machineId
           itemId
           item {

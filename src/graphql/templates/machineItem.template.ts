@@ -10,6 +10,7 @@ export const CREATE_MACHINE_ITEM = gql`
         id
         name
         quantity
+        setPrice
         machineId
         machine {
           id
@@ -21,6 +22,8 @@ export const CREATE_MACHINE_ITEM = gql`
         item {
           id
           name
+          basePrice
+          expirationPeriod
           createdAt
           updatedAt
         }
@@ -39,6 +42,29 @@ export const DELETE_MACHINE_ITEM = gql`
   }
 `;
 
+export const UPDATE_MACHINE_ITEM = gql`
+  mutation UpdateMachineItem($input: UpdateMachineItemInput!) {
+    updateMachineItem(input: $input) {
+      code
+      success
+      message
+      machineItem {
+        id
+        name
+        quantity
+        setPrice
+        itemId
+        item {
+          id
+          name
+          basePrice
+          expirationPeriod
+        }
+      }
+    }
+  }
+`;
+
 export const UPDATE_MACHINE_ITEMS = gql`
   mutation UpdateMachineItems($input: UpdateMachineItemsInput!) {
     updateMachineItems(input: $input) {
@@ -53,8 +79,6 @@ export const UPDATE_MACHINE_ITEMS = gql`
         machine {
           id
           name
-          createdAt
-          updatedAt
         }
         itemId
         item {
@@ -62,8 +86,6 @@ export const UPDATE_MACHINE_ITEMS = gql`
           name
           basePrice
           expirationPeriod
-          createdAt
-          updatedAt
         }
       }
     }

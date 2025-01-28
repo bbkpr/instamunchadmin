@@ -5,7 +5,8 @@ import { GET_ITEMS } from '@/graphql/templates/item.template';
 import {
   CREATE_MACHINE_ITEM,
   UPDATE_MACHINE_ITEMS,
-  DELETE_MACHINE_ITEM
+  DELETE_MACHINE_ITEM,
+  UPDATE_MACHINE_ITEM
 } from '@/graphql/templates/machineItem.template';
 
 export function useMachine(machineId: string) {
@@ -21,6 +22,7 @@ export function useMachine(machineId: string) {
   const { data: itemsData } = useQuery(GET_ITEMS);
 
   const [createMachineItemMutation] = useMutation(CREATE_MACHINE_ITEM);
+  const [updateMachineItemMutation] = useMutation(UPDATE_MACHINE_ITEM);
   const [updateMachineItemsMutation] = useMutation(UPDATE_MACHINE_ITEMS);
   const [deleteMachineItemMutation] = useMutation(DELETE_MACHINE_ITEM);
 
@@ -45,6 +47,24 @@ export function useMachine(machineId: string) {
     }
 
     return result.data.addMachineItem.machineItem;
+  };
+
+  const updateMachineItem = async (input: { id: string; quantity: number; setPrice?: number }) => {
+    const result = await updateMachineItemMutation({
+      variables: { input },
+      refetchQueries: [
+        {
+          query: GET_MACHINE,
+          variables: { id: machineId }
+        }
+      ]
+    });
+
+    if (!result.data?.updateMachineItem.success) {
+      throw new Error(result.data?.updateMachineItem.message);
+    }
+
+    return result.data.updateMachineItem.machineItem;
   };
 
   const updateMachineItems = async (machineId: string, items: { id: string; quantity: number }[]) => {
@@ -89,6 +109,7 @@ export function useMachine(machineId: string) {
     loading,
     error,
     addMachineItem,
+    updateMachineItem,
     updateMachineItems,
     deleteMachineItem
   };
