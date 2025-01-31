@@ -6,7 +6,6 @@ import { client } from '@/graphql/apolloClient';
 
 import ErrorBoundary from './components/ErrorBoundary';
 import router from './router';
-import { Layout } from '@/components/Layout/Layout';
 
 const App: React.FC = () => (
   <ApolloProvider client={client}>

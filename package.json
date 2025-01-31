@@ -35,7 +35,8 @@
     "react": "~18.3.1",
     "react-bootstrap": "~2.10.7",
     "react-dom": "~18.3.1",
-    "react-router": "~7.0.2"
+    "react-router": "~7.0.2",
+    "@react-buddy/ide-toolbox": "^2.4.0"
   },
   "devDependencies": {
     "@eslint/compat": "~1.2.4",
