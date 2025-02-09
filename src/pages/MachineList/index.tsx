@@ -3,6 +3,7 @@ import { Container, Table, Button, Spinner, Modal, Form } from 'react-bootstrap'
 import { useMachines } from '@/hooks/useMachines';
 import { Machine } from '@/generated/graphql';
 import { useNavigate } from 'react-router';
+import omit from 'lodash/omit';
 
 interface MachineFormData {
   /** Selected `locationId`.
@@ -95,7 +96,7 @@ export function MachineList() {
           });
         }
       } else {
-        await createMachine(formData);
+        await createMachine(omit(formData, 'locationId', 'machineLocationId'));
       }
       setShowEditModal(false);
       setSelectedMachine(null);
