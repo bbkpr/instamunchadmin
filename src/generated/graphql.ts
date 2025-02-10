@@ -55,7 +55,7 @@ export type CreateLocationMutationResponse = MutationResponse & {
 export type CreateMachineInput = {
   machineTypeId: Scalars['ID']['input'];
   manufacturerId: Scalars['ID']['input'];
-  name: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** Assign an Item to a Machine */

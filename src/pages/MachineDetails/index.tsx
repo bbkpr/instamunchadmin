@@ -95,11 +95,11 @@ export function MachineDetails() {
                   {machine.manufacturer?.name} {machine.machineType?.name}
                 </em>
                 <br />
-                {machine.machineLocations[0].location.address1} {machine.machineLocations[0].location.address2}
+                {machine.machineLocations[0]?.location.address1} {machine.machineLocations[0]?.location.address2}
                 <br />
-                {machine.machineLocations[0].location.city}, {machine.machineLocations[0].location.state}{' '}
-                {machine.machineLocations[0].location.stateOrProvince} {machine.machineLocations[0].location.postalCode}{' '}
-                {machine.machineLocations[0].location.country}
+                {machine.machineLocations[0]?.location.city}, {machine.machineLocations[0]?.location.state}{' '}
+                {machine.machineLocations[0]?.location.stateOrProvince}{' '}
+                {machine.machineLocations[0]?.location.postalCode} {machine.machineLocations[0]?.location.country}
               </p>
 
               {/*{machine.images && machine.images.length > 0 && (*/}

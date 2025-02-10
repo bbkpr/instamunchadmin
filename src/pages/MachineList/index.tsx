@@ -96,7 +96,8 @@ export function MachineList() {
           });
         }
       } else {
-        await createMachine(omit(formData, 'locationId', 'machineLocationId'));
+        const mch = await createMachine(omit(formData, 'locationId', 'machineLocationId'));
+        await createMachineLocation({ machineId: mch.id, locationId: formData.locationId });
       }
       setShowEditModal(false);
       setSelectedMachine(null);

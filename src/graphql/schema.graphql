@@ -386,7 +386,7 @@ input UpdateItemInput {
 
 "Create Machine"
 input CreateMachineInput {
-  name: String!
+  name: String
   machineTypeId: ID!
   manufacturerId: ID!
 }
