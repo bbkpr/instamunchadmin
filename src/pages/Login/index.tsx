@@ -3,31 +3,32 @@ import { Form, Button, Alert, Container, Card } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
 import { LOGIN } from '@/graphql/templates/auth.template';
 import { useNavigate } from 'react-router';
+import { useUsers } from '@/hooks/useUsers';
 
 export function Login() {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const [login, { loading }] = useMutation(LOGIN);
+  const { login, loading } = useUsers();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
     try {
-      const { data } = await login({
-        variables: { input: formData }
-      });
+      const loginResult = await login(formData);
 
-      if (data.login.success) {
-        localStorage.setItem('token', data.login.token);
+      console.log(`login handleSubmit data`, loginResult);
+      if (loginResult.success) {
+        localStorage.setItem('token', loginResult.token);
         navigate('/');
       } else {
-        setError(data.login.message);
+        setError(loginResult.message);
       }
     } catch (err) {
-      setError('Index failed');
+      console.log(`login handleSubmit err`, err);
+      setError('Login failed');
     }
   };
 
@@ -73,7 +74,7 @@ export function Login() {
             </Form.Group>
 
             <Button variant="primary" type="submit" className="w-100" disabled={loading}>
-              {loading ? 'Logging in...' : 'Index'}
+              {loading ? 'Logging in...' : 'Login'}
             </Button>
           </Form>
         </Card.Body>
