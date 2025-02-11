@@ -5,10 +5,10 @@ import { client } from '@/graphql/apolloClient';
 
 export function Logout() {
   const navigate = useNavigate();
-  const { currentUser } = useUsers();
-  console.log('currentUser', currentUser);
+  const { currentUser, isAuthenticated, login, logout } = useUsers();
 
   const handleLogout = async () => {
+    console.log(`Logging out ${currentUser?.email}`);
     localStorage.removeItem('token');
     await client.resetStore();
     navigate('/login');
@@ -18,13 +18,12 @@ export function Logout() {
     navigate('/login');
   };
 
-  return currentUser != null ? (
-    <Button variant="outline-danger" onClick={handleLogout}>
-      Logout
-    </Button>
-  ) : (
-    <Button variant="outline-primary" onClick={handleLogin}>
-      Login
+  return (
+    <Button
+      variant={isAuthenticated ? 'outline-danger' : 'outline-primary'}
+      onClick={isAuthenticated ? handleLogout : handleLogin}
+    >
+      {isAuthenticated ? 'Logout' : 'Login'}
     </Button>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router';
+import { useParams, useNavigate, useLocation } from 'react-router';
 import { Container, Row, Col, Card, Button, Table, Modal, Form, Spinner } from 'react-bootstrap';
 import { useMachine } from '@/hooks/useMachine';
 import { Item, MachineItem } from '@/generated/graphql';
@@ -14,8 +14,19 @@ interface ItemFormData {
 export function MachineDetails() {
   const { machineId } = useParams();
   const navigate = useNavigate();
-  const { machine, items, loading, error, addMachineItem, updateMachineItem, updateMachineItems, deleteMachineItem } =
-    useMachine(machineId!);
+  const location = useLocation();
+  const navigatedFrom = location.state?.from;
+
+  const {
+    machine,
+    items,
+    loading,
+    error,
+    createMachineItem,
+    updateMachineItem,
+    updateMachineItems,
+    deleteMachineItem
+  } = useMachine(machineId!);
 
   const [showAddItemModal, setShowAddItemModal] = useState(false);
   const [showEditItemModal, setShowEditItemModal] = useState(false);
@@ -45,7 +56,7 @@ export function MachineDetails() {
   const handleAddItem = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await addMachineItem(formData);
+      await createMachineItem(formData);
       setShowAddItemModal(false);
       setFormData({ itemId: '', quantity: 0, setPrice: undefined });
     } catch (err) {
@@ -80,10 +91,18 @@ export function MachineDetails() {
     }
   };
 
+  const handleBack = () => {
+    if (navigatedFrom === 'locations') {
+      navigate('/locations');
+    } else {
+      navigate('/machines');
+    }
+  };
+
   return (
     <Container className="py-4" fluid>
-      <Button variant="secondary" onClick={() => navigate('/machines')} className="mb-3">
-        ← Back to Machines
+      <Button variant="secondary" onClick={handleBack} className="mb-3">
+        ← Back to {navigatedFrom === 'locations' ? 'Locations' : 'Machines'}
       </Button>
       <Row className="mb-4">
         <Col md={4}>

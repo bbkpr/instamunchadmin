@@ -26,7 +26,7 @@ export function useMachine(machineId: string) {
   const [updateMachineItemsMutation] = useMutation(UPDATE_MACHINE_ITEMS);
   const [deleteMachineItemMutation] = useMutation(DELETE_MACHINE_ITEM);
 
-  const addMachineItem = async (input: { itemId: string; quantity: number; name?: string }) => {
+  const createMachineItem = async (input: { itemId: string; quantity: number; name?: string }) => {
     const result = await createMachineItemMutation({
       variables: {
         input: {
@@ -42,11 +42,11 @@ export function useMachine(machineId: string) {
       ]
     });
 
-    if (!result.data?.addMachineItem.success) {
-      throw new Error(result.data?.addMachineItem.message);
+    if (!result.data?.createMachineItem.success) {
+      throw new Error(result.data?.createMachineItem.message);
     }
 
-    return result.data.addMachineItem.machineItem;
+    return result.data.createMachineItem.machineItem;
   };
 
   const updateMachineItem = async (input: { id: string; quantity: number; setPrice?: number }) => {
@@ -108,7 +108,7 @@ export function useMachine(machineId: string) {
     items: itemsData?.getItems || [],
     loading,
     error,
-    addMachineItem,
+    createMachineItem,
     updateMachineItem,
     updateMachineItems,
     deleteMachineItem

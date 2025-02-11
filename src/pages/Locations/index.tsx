@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
-import { Button, Table, Modal, Form, Container, Spinner } from 'react-bootstrap';
+import { Button, Table, Modal, Form, Container, Spinner, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { LocationFormData, useLocations } from '@/hooks/useLocations';
-import { Location } from '@/generated/graphql';
+import { Location, Machine } from '@/generated/graphql';
+import { useMachines } from '@/hooks/useMachines';
+import { Link } from 'react-router';
 
 export function Locations() {
   const { locations, loading, error, createLocation, updateLocation, deleteLocation } = useLocations();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showMachinesModal, setShowMachinesModal] = useState(false);
+  const [selectedLocationMachines, setSelectedLocationMachines] = useState<Machine[]>([]);
+  const { machines } = useMachines();
   const [selectedLocation, setSelectedLocation] = useState<Location | null>(null);
   const [formData, setFormData] = useState<LocationFormData>({
     address1: '',
@@ -32,6 +37,16 @@ export function Locations() {
   const handleDeleteClick = (location: Location) => {
     setSelectedLocation(location);
     setShowDeleteModal(true);
+  };
+
+  const handleViewMachines = (location: Location) => {
+    console.log('handleViewMachines', location, machines);
+    const locationMachines = machines.filter((machine) =>
+      machine.machineLocations?.some((ml) => ml?.location?.id === location.id)
+    );
+
+    setSelectedLocationMachines(locationMachines);
+    setShowMachinesModal(true);
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
@@ -130,6 +145,15 @@ export function Locations() {
               <td>{location.country}</td>
               <td>
                 <div className="table-button-wrap">
+                  <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    className="me-2"
+                    aria-description="View Machines"
+                    onClick={() => handleViewMachines(location)}
+                  >
+                    🍱 View Machines
+                  </Button>
                   <Button
                     variant="outline-primary"
                     size="sm"
@@ -238,6 +262,75 @@ export function Locations() {
           </Button>
           <Button variant="danger" onClick={handleDelete}>
             Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      {/* Show Machines Modal */}
+      <Modal show={showMachinesModal} onHide={() => setShowMachinesModal(false)} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Machines at this Location</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedLocationMachines.length > 0 ? (
+            <Table responsive>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Type</th>
+                  <th>Manufacturer</th>
+                  <th>Items</th>
+                </tr>
+              </thead>
+              <tbody>
+                {selectedLocationMachines.map((machine) => (
+                  <tr key={machine.id}>
+                    <td>
+                      <Link
+                        to={`/machines/${machine.id}`}
+                        state={{ from: 'locations' }}
+                        className="text-decoration-none"
+                      >
+                        {machine.name}
+                      </Link>
+                    </td>
+                    <td>{machine.machineType?.name}</td>
+                    <td>{machine.manufacturer?.name}</td>
+                    <td>
+                      {machine.machineItems && machine.machineItems.length > 0 ? (
+                        <OverlayTrigger
+                          placement="left"
+                          overlay={
+                            <Tooltip>
+                              {machine.machineItems.map((mi, index) => (
+                                <div key={mi?.id}>
+                                  {mi?.item?.name} ({mi?.quantity}){mi?.setPrice && ` - $${mi?.setPrice.toFixed(2)}`}{' '}
+                                  {mi?.item?.basePrice && ` ($${mi?.item?.basePrice.toFixed(2)})`}
+                                  {index < (machine?.machineItems?.length ?? 0) - 1 && <hr className="my-1" />}
+                                </div>
+                              ))}
+                            </Tooltip>
+                          }
+                        >
+                          <span style={{ cursor: 'help', textDecoration: 'underline' }}>
+                            {machine.machineItems.length}
+                          </span>
+                        </OverlayTrigger>
+                      ) : (
+                        0
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          ) : (
+            <p className="text-center text-muted">No machines at this location</p>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setShowMachinesModal(false)}>
+            Close
           </Button>
         </Modal.Footer>
       </Modal>

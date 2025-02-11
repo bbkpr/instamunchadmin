@@ -1,4 +1,4 @@
-import { createBrowserRouter } from 'react-router';
+import { createBrowserRouter, Outlet } from 'react-router';
 
 import Index from './pages/Index';
 import Notfound from './pages/Notfound';
@@ -8,77 +8,54 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import { MachineDetails } from '@/pages/MachineDetails';
 import { UserManagement } from '@/pages/UserManagement';
 import { Login } from '@/pages/Login';
+import { AuthWrapper } from '@/components/AuthWrapper';
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: (
-      <Layout>
-        <ErrorBoundary>
-          <Index />
-        </ErrorBoundary>
-      </Layout>
-    )
-  },
-  {
     path: '/login',
     element: (
-      <Layout>
-        <ErrorBoundary>
-          <Login />
-        </ErrorBoundary>
-      </Layout>
+      <ErrorBoundary>
+        <Login />
+      </ErrorBoundary>
     )
   },
   {
-    path: '/machines',
+    path: '/',
     element: (
-      <Layout>
-        <ErrorBoundary>
-          <Index />
-        </ErrorBoundary>
-      </Layout>
-    )
-  },
-  {
-    path: '/machines/:machineId',
-    element: (
-      <Layout>
-        <ErrorBoundary>
-          <MachineDetails />
-        </ErrorBoundary>
-      </Layout>
-    )
-  },
-  {
-    path: '/locations',
-    element: (
-      <Layout>
-        <ErrorBoundary>
-          <Locations />
-        </ErrorBoundary>
-      </Layout>
-    )
-  },
-  {
-    path: '/users',
-    element: (
-      <Layout>
-        <ErrorBoundary>
-          <UserManagement />
-        </ErrorBoundary>
-      </Layout>
-    )
-  },
-  {
-    path: '*',
-    element: (
-      <Layout>
-        <ErrorBoundary>
-          <Notfound />
-        </ErrorBoundary>
-      </Layout>
-    )
+      <AuthWrapper>
+        <Layout>
+          <ErrorBoundary>
+            <Outlet />
+          </ErrorBoundary>
+        </Layout>
+      </AuthWrapper>
+    ),
+    children: [
+      {
+        index: true,
+        element: <Index />
+      },
+      {
+        path: 'machines',
+        element: <Index />
+      },
+      {
+        path: 'machines/:machineId',
+        element: <MachineDetails />
+      },
+      {
+        path: 'locations',
+        element: <Locations />
+      },
+      {
+        path: 'users',
+        element: <UserManagement />
+      },
+      {
+        path: '*',
+        element: <Notfound />
+      }
+    ]
   }
 ]);
 

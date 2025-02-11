@@ -3,6 +3,8 @@ import { useMutation, useQuery } from '@apollo/client';
 import { CREATE_USER, DELETE_USER, GET_ME, GET_USERS, UPDATE_USER } from '@/graphql/templates/user.template';
 import { LoginInput, Role, User } from '@/generated/graphql';
 import { LOGIN } from '@/graphql/templates/auth.template';
+import { useNavigate } from 'react-router';
+import { client } from '@/graphql/apolloClient';
 
 interface UserInput {
   email: string;
@@ -16,7 +18,9 @@ interface UpdateUserInput extends UserInput {
 }
 
 export function useUsers() {
-  const { data: meData } = useQuery(GET_ME);
+  const navigate = useNavigate();
+
+  const { data: meData, loading: meLoading, error: meError } = useQuery(GET_ME);
   const { data, loading, error } = useQuery(GET_USERS);
 
   const [loginMutation] = useMutation(LOGIN);
@@ -28,10 +32,15 @@ export function useUsers() {
   const login = async (input: LoginInput) => {
     const result = await loginMutation({
       variables: { input },
-      refetchQueries: [{ query: GET_ME }, { query: GET_USERS }]
+      refetchQueries: [{ query: GET_USERS }]
     });
-    console.log(`login result: ${JSON.stringify(result)}`);
     return result.data.login;
+  };
+
+  const logout = async () => {
+    localStorage.removeItem('token');
+    await client.resetStore();
+    navigate('/login');
   };
 
   const createUser = async (input: UserInput) => {
@@ -59,10 +68,12 @@ export function useUsers() {
 
   return {
     currentUser: meData?.me,
+    isAuthenticated: !meLoading && !meError && !!meData?.me,
     users: (data?.getUsers as User[]) || [],
     loading,
     error,
     login,
+    logout,
     createUser,
     updateUser,
     deleteUser
