@@ -16,6 +16,33 @@ export type Scalars = {
   Float: { input: number; output: number };
 };
 
+export enum AuditAction {
+  Create = 'CREATE',
+  Delete = 'DELETE',
+  Update = 'UPDATE'
+}
+
+export type AuditLog = {
+  __typename?: 'AuditLog';
+  action: AuditAction;
+  createdAt: Scalars['String']['output'];
+  entityId: Scalars['String']['output'];
+  entityType: Scalars['String']['output'];
+  field?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  newValue?: Maybe<Scalars['String']['output']>;
+  oldValue?: Maybe<Scalars['String']['output']>;
+  user?: Maybe<User>;
+};
+
+export type AuditLogFilter = {
+  action?: InputMaybe<AuditAction>;
+  entityType?: InputMaybe<Scalars['String']['input']>;
+  fromDate?: InputMaybe<Scalars['String']['input']>;
+  toDate?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
+};
+
 /** Create Item */
 export type CreateItemInput = {
   basePrice: Scalars['Float']['input'];
@@ -55,7 +82,7 @@ export type CreateLocationMutationResponse = MutationResponse & {
 export type CreateMachineInput = {
   machineTypeId: Scalars['ID']['input'];
   manufacturerId: Scalars['ID']['input'];
-  name?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
 };
 
 /** Assign an Item to a Machine */
@@ -80,7 +107,7 @@ export type CreateMachineItemMutationResponse = MutationResponse & {
 export type CreateMachineLocationInput = {
   locationId: Scalars['ID']['input'];
   machineId: Scalars['ID']['input'];
-  name: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CreateMachineLocationMutationResponse = MutationResponse & {
@@ -485,6 +512,13 @@ export type MutationResponse = {
   success: Scalars['Boolean']['output'];
 };
 
+export type PaginatedAuditLogs = {
+  __typename?: 'PaginatedAuditLogs';
+  logs: Array<AuditLog>;
+  pageCount: Scalars['Int']['output'];
+  totalCount: Scalars['Int']['output'];
+};
+
 /** Auth Permissions */
 export enum Permission {
   CreateItems = 'CREATE_ITEMS',
@@ -503,6 +537,7 @@ export enum Permission {
   DeleteMachineManufacturers = 'DELETE_MACHINE_MANUFACTURERS',
   DeleteMachineTypes = 'DELETE_MACHINE_TYPES',
   DeleteUsers = 'DELETE_USERS',
+  ReadAuditLogs = 'READ_AUDIT_LOGS',
   ReadItems = 'READ_ITEMS',
   ReadLocations = 'READ_LOCATIONS',
   ReadMachines = 'READ_MACHINES',
@@ -529,6 +564,9 @@ export enum PermissionOperator {
 
 export type Query = {
   __typename?: 'Query';
+  getAuditLogs: PaginatedAuditLogs;
+  /** Get entity changes from the Audit Log */
+  getEntityChanges: Array<AuditLog>;
   /** Get all Items, from everywhere */
   getItems?: Maybe<Array<Maybe<Item>>>;
   /** Get Items in a specific Machine */
@@ -559,10 +597,25 @@ export type Query = {
   /** Get Machines at a specific Location */
   getMachinesByLocation?: Maybe<Array<Machine>>;
   getUser?: Maybe<User>;
+  /** Get entity changes by a specific user from the Audit Log */
+  getUserChanges: Array<AuditLog>;
   getUserPermissions: Array<Scalars['String']['output']>;
   getUsers: Array<User>;
   /** Get the currently logged in User */
   me?: Maybe<User>;
+};
+
+export type QueryGetAuditLogsArgs = {
+  filter?: InputMaybe<AuditLogFilter>;
+  page?: Scalars['Int']['input'];
+  pageSize?: Scalars['Int']['input'];
+  sortBy?: InputMaybe<Scalars['String']['input']>;
+  sortOrder?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type QueryGetEntityChangesArgs = {
+  entityId: Scalars['String']['input'];
+  entityType: Scalars['String']['input'];
 };
 
 export type QueryGetItemsByMachineArgs = {
@@ -599,6 +652,10 @@ export type QueryGetMachinesByLocationArgs = {
 
 export type QueryGetUserArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type QueryGetUserChangesArgs = {
+  userId: Scalars['String']['input'];
 };
 
 export type QueryGetUserPermissionsArgs = {
@@ -660,6 +717,7 @@ export type UpdateMachineInput = {
 /** Update a MachineItem */
 export type UpdateMachineItemInput = {
   id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
   quantity?: InputMaybe<Scalars['Int']['input']>;
   setPrice?: InputMaybe<Scalars['Float']['input']>;
 };
@@ -874,6 +932,9 @@ export type ResolversInterfaceTypes<_RefType extends Record<string, unknown>> = 
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  AuditAction: AuditAction;
+  AuditLog: ResolverTypeWrapper<AuditLog>;
+  AuditLogFilter: AuditLogFilter;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   CreateItemInput: CreateItemInput;
   CreateItemMutationResponse: ResolverTypeWrapper<CreateItemMutationResponse>;
@@ -913,6 +974,7 @@ export type ResolversTypes = {
   MachineType: ResolverTypeWrapper<MachineType>;
   Mutation: ResolverTypeWrapper<{}>;
   MutationResponse: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['MutationResponse']>;
+  PaginatedAuditLogs: ResolverTypeWrapper<PaginatedAuditLogs>;
   Permission: Permission;
   PermissionOperator: PermissionOperator;
   Query: ResolverTypeWrapper<{}>;
@@ -941,6 +1003,8 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  AuditLog: AuditLog;
+  AuditLogFilter: AuditLogFilter;
   Boolean: Scalars['Boolean']['output'];
   CreateItemInput: CreateItemInput;
   CreateItemMutationResponse: CreateItemMutationResponse;
@@ -980,6 +1044,7 @@ export type ResolversParentTypes = {
   MachineType: MachineType;
   Mutation: {};
   MutationResponse: ResolversInterfaceTypes<ResolversParentTypes>['MutationResponse'];
+  PaginatedAuditLogs: PaginatedAuditLogs;
   Query: {};
   String: Scalars['String']['output'];
   UpdateItemInput: UpdateItemInput;
@@ -1014,6 +1079,22 @@ export type RequirePermissionDirectiveResolver<
   ContextType = any,
   Args = RequirePermissionDirectiveArgs
 > = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type AuditLogResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['AuditLog'] = ResolversParentTypes['AuditLog']
+> = {
+  action?: Resolver<ResolversTypes['AuditAction'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  entityId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  entityType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  field?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  newValue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  oldValue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
 
 export type CreateItemMutationResponseResolvers<
   ContextType = any,
@@ -1528,10 +1609,32 @@ export type MutationResponseResolvers<
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
 };
 
+export type PaginatedAuditLogsResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['PaginatedAuditLogs'] = ResolversParentTypes['PaginatedAuditLogs']
+> = {
+  logs?: Resolver<Array<ResolversTypes['AuditLog']>, ParentType, ContextType>;
+  pageCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  totalCount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type QueryResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']
 > = {
+  getAuditLogs?: Resolver<
+    ResolversTypes['PaginatedAuditLogs'],
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetAuditLogsArgs, 'page' | 'pageSize'>
+  >;
+  getEntityChanges?: Resolver<
+    Array<ResolversTypes['AuditLog']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetEntityChangesArgs, 'entityId' | 'entityType'>
+  >;
   getItems?: Resolver<Maybe<Array<Maybe<ResolversTypes['Item']>>>, ParentType, ContextType>;
   getItemsByMachine?: Resolver<
     Maybe<Array<ResolversTypes['MachineItem']>>,
@@ -1588,6 +1691,12 @@ export type QueryResolvers<
     RequireFields<QueryGetMachinesByLocationArgs, 'locationId'>
   >;
   getUser?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'id'>>;
+  getUserChanges?: Resolver<
+    Array<ResolversTypes['AuditLog']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetUserChangesArgs, 'userId'>
+  >;
   getUserPermissions?: Resolver<
     Array<ResolversTypes['String']>,
     ParentType,
@@ -1729,6 +1838,7 @@ export type UserResolvers<
 };
 
 export type Resolvers<ContextType = any> = {
+  AuditLog?: AuditLogResolvers<ContextType>;
   CreateItemMutationResponse?: CreateItemMutationResponseResolvers<ContextType>;
   CreateLocationMutationResponse?: CreateLocationMutationResponseResolvers<ContextType>;
   CreateMachineItemMutationResponse?: CreateMachineItemMutationResponseResolvers<ContextType>;
@@ -1755,6 +1865,7 @@ export type Resolvers<ContextType = any> = {
   MachineType?: MachineTypeResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   MutationResponse?: MutationResponseResolvers<ContextType>;
+  PaginatedAuditLogs?: PaginatedAuditLogsResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   UpdateItemMutationResponse?: UpdateItemMutationResponseResolvers<ContextType>;
   UpdateLocationMutationResponse?: UpdateLocationMutationResponseResolvers<ContextType>;

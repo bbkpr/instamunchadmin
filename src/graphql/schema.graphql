@@ -62,11 +62,30 @@ enum Permission {
   DELETE_MACHINE_TYPES
   DELETE_MACHINES
   DELETE_USERS
+  READ_AUDIT_LOGS
   UPDATE_LOCATIONS
   UPDATE_MACHINE_LOCATIONS
   UPDATE_MACHINE_MANUFACTURERS
   UPDATE_MACHINE_TYPES
   UPDATE_USERS
+}
+
+type AuditLog {
+  id: ID!
+  entityType: String!
+  entityId: String!
+  action: AuditAction!
+  field: String
+  oldValue: String
+  newValue: String
+  user: User
+  createdAt: String!
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
 }
 
 type Item {
@@ -149,6 +168,12 @@ type MachineLocation {
   updatedAt: String!
 }
 
+type PaginatedAuditLogs {
+  logs: [AuditLog!]!
+  totalCount: Int!
+  pageCount: Int!
+}
+
 type User {
   id: ID!
   email: String!
@@ -161,6 +186,19 @@ type User {
 type Query {
   "Get the currently logged in User"
   me: User
+
+  getAuditLogs(
+    page: Int! = 1
+    pageSize: Int! = 10
+    sortBy: String
+    sortOrder: String
+    filter: AuditLogFilter
+  ): PaginatedAuditLogs! @requirePermission(permissions: [READ_AUDIT_LOGS])
+  "Get entity changes from the Audit Log"
+  getEntityChanges(entityType: String!, entityId: String!): [AuditLog!]!
+    @requirePermission(permissions: [READ_AUDIT_LOGS])
+  "Get entity changes by a specific user from the Audit Log"
+  getUserChanges(userId: String!): [AuditLog!]! @requirePermission(permissions: [READ_AUDIT_LOGS])
 
   "Get all Items, from everywhere"
   getItems: [Item]
@@ -369,6 +407,14 @@ input LoginInput {
   password: String!
 }
 
+input AuditLogFilter {
+  entityType: String
+  action: AuditAction
+  userId: String
+  fromDate: String
+  toDate: String
+}
+
 "Create Item"
 input CreateItemInput {
   name: String!
@@ -386,7 +432,7 @@ input UpdateItemInput {
 
 "Create Machine"
 input CreateMachineInput {
-  name: String
+  name: String!
   machineTypeId: ID!
   manufacturerId: ID!
 }
@@ -422,7 +468,7 @@ input UpdateLocationInput {
 
 "Assign a Machine to a Location"
 input CreateMachineLocationInput {
-  name: String!
+  name: String
   machineId: ID!
   locationId: ID!
 }
@@ -471,6 +517,7 @@ input UpdateMachineTypeInput {
 "Update a MachineItem"
 input UpdateMachineItemInput {
   id: ID!
+  name: String
   quantity: Int
   setPrice: Float
 }

@@ -13,12 +13,18 @@ importers:
       '@react-buddy/ide-toolbox':
         specifier: ^2.4.0
         version: 2.4.0(react@18.3.1)
+      '@tanstack/react-table':
+        specifier: ^8.21.2
+        version: 8.21.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       bootstrap:
         specifier: ~5.3.3
         version: 5.3.3(@popperjs/core@2.11.8)
       clsx:
         specifier: ~2.1.1
         version: 2.1.1
+      date-fns:
+        specifier: ^4.1.0
+        version: 4.1.0
       dotenv:
         specifier: ~16.4.7
         version: 16.4.7
@@ -1742,6 +1748,19 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20'
 
+  '@tanstack/react-table@8.21.2':
+    resolution:
+      { integrity: sha512-11tNlEDTdIhMJba2RBH+ecJ9l1zgS2kjmexDPAraulc8jeNA4xocSNeyzextT0XJyASil4XsCYlJmf5jEWAtYg== }
+    engines: { node: '>=12' }
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
+
+  '@tanstack/table-core@8.21.2':
+    resolution:
+      { integrity: sha512-uvXk/U4cBiFMxt+p9/G7yUWI/UbHYbyghLCjlpWZ3mLeIZiUBSKcUnw9UnKkdRz7Z/N4UBuFLWQdJCjUe7HjvA== }
+    engines: { node: '>=12' }
+
   '@testing-library/dom@10.4.0':
     resolution:
       { integrity: sha512-pemlzrSESWbdAloYml3bAJMEfNh1Z7EduzqPKprCH5S341frlpYnUEW0H72dLxa6IsYr+mPno20GiSm+h9dEdQ== }
@@ -2567,6 +2586,10 @@ packages:
   dataloader@2.2.3:
     resolution:
       { integrity: sha512-y2krtASINtPFS1rSDjacrFgn1dcUuoREVabwlOGOe4SdxenREqwjwjElAdwvbGM7kgZz9a3KVicWR7vcz8rnzA== }
+
+  date-fns@4.1.0:
+    resolution:
+      { integrity: sha512-Ukq0owbQXxa/U3EGtsdVBkR1w7KOQ5gIBqdH2hkvknzZPYvBxb/aa6E8L7tmjFtkwZBu3UXBbjIgPo/Ez4xaNg== }
 
   debounce@1.2.1:
     resolution:
@@ -7041,6 +7064,14 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.16
 
+  '@tanstack/react-table@8.21.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@tanstack/table-core': 8.21.2
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
+  '@tanstack/table-core@8.21.2': {}
+
   '@testing-library/dom@10.4.0':
     dependencies:
       '@babel/code-frame': 7.26.2
@@ -7837,6 +7868,8 @@ snapshots:
       is-data-view: 1.0.1
 
   dataloader@2.2.3: {}
+
+  date-fns@4.1.0: {}
 
   debounce@1.2.1: {}
 
