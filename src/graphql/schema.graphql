@@ -193,12 +193,11 @@ type Query {
     sortBy: String
     sortOrder: String
     filter: AuditLogFilter
-  ): PaginatedAuditLogs! @requirePermission(permissions: [READ_AUDIT_LOGS])
+  ): PaginatedAuditLogs! @requirePermission(permissions: [UPDATE_USERS])
   "Get entity changes from the Audit Log"
-  getEntityChanges(entityType: String!, entityId: String!): [AuditLog!]!
-    @requirePermission(permissions: [READ_AUDIT_LOGS])
+  getEntityChanges(entityType: String!, entityId: String!): [AuditLog!]! @requirePermission(permissions: [UPDATE_USERS])
   "Get entity changes by a specific user from the Audit Log"
-  getUserChanges(userId: String!): [AuditLog!]! @requirePermission(permissions: [READ_AUDIT_LOGS])
+  getUserChanges(userId: String!): [AuditLog!]! @requirePermission(permissions: [UPDATE_USERS])
 
   "Get all Items, from everywhere"
   getItems: [Item]
