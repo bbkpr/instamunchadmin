@@ -9,6 +9,7 @@ import { MachineDetails } from '@/pages/MachineDetails';
 import { UserManagement } from '@/pages/UserManagement';
 import { Login } from '@/pages/Login';
 import { AuthWrapper } from '@/components/AuthWrapper';
+import { AuditLogTable } from '@/pages/AuditLogTable';
 
 const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
       {
         path: 'users',
         element: <UserManagement />
+      },
+      {
+        path: 'auditlogs',
+        element: <AuditLogTable />
       },
       {
         path: '*',
