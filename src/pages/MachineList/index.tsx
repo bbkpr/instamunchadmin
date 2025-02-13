@@ -219,7 +219,7 @@ export function MachineList() {
                     className="me-2"
                     onClick={() => navigate(`/machines/${machine.id}`)}
                   >
-                    Manage Items
+                    🍱 Manage Items
                   </Button>
                   <Button
                     variant="outline-primary"

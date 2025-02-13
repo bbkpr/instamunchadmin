@@ -39,7 +39,9 @@ export function Layout({ children }: LayoutProps) {
                     </Nav.Link>
                   </>
                 )}
-                <ThemeSwitcher />
+                <Nav.Link as={Link} to="/settings" active={location.pathname === '/settings'}>
+                  Settings
+                </Nav.Link>
               </Nav>
             )}
             <Logout />

@@ -10,6 +10,7 @@ import { UserManagement } from '@/pages/UserManagement';
 import { Login } from '@/pages/Login';
 import { AuthWrapper } from '@/components/AuthWrapper';
 import { AuditLogTable } from '@/pages/AuditLogTable';
+import { UserSettings } from '@/pages/UserSettings';
 
 const router = createBrowserRouter([
   {
@@ -55,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: 'auditlogs',
         element: <AuditLogTable />
+      },
+      {
+        path: 'settings',
+        element: <UserSettings />
       },
       {
         path: '*',

@@ -145,13 +145,13 @@ export function Locations() {
               <td>
                 <div className="table-button-wrap">
                   <Button
-                    variant="outline-secondary"
+                    variant="outline-primary"
                     size="sm"
                     className="me-2"
                     aria-description="View Machines"
                     onClick={() => handleViewMachines(location)}
                   >
-                    🍱 View Machines
+                    📦 View Machines
                   </Button>
                   <Button
                     variant="outline-primary"
