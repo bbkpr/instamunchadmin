@@ -6,11 +6,14 @@ import { client } from '@/graphql/apolloClient';
 
 import ErrorBoundary from './components/ErrorBoundary';
 import router from './router';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 
 const App: React.FC = () => (
   <ApolloProvider client={client}>
     <ErrorBoundary>
-      <RouterProvider router={router} />
+      <ThemeProvider>
+        <RouterProvider router={router} />
+      </ThemeProvider>
     </ErrorBoundary>
   </ApolloProvider>
 );

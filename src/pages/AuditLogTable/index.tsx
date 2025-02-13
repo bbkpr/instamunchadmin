@@ -41,7 +41,7 @@ interface AuditLogFilter {
 export function AuditLogTable() {
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 10
+    pageSize: 100
   });
 
   const [sorting, setSorting] = useState<SortingState>([{ desc: true, id: 'createdAt' }]);
@@ -254,7 +254,7 @@ export function AuditLogTable() {
             }}
             style={{ width: 'auto' }}
           >
-            {[10, 20, 30, 40, 50].map((pageSize) => (
+            {[100, 250, 500].map((pageSize) => (
               <option key={pageSize} value={pageSize}>
                 {pageSize}
               </option>

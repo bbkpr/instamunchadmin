@@ -3,6 +3,7 @@ import { Container, Nav, Navbar } from 'react-bootstrap';
 import { Link, useLocation } from 'react-router';
 import { Logout } from '@/pages/Logout';
 import { useUsers } from '@/hooks/useUsers';
+import { ThemeSwitcher } from '@/components/ThemeSwitcher';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -38,6 +39,7 @@ export function Layout({ children }: LayoutProps) {
                     </Nav.Link>
                   </>
                 )}
+                <ThemeSwitcher />
               </Nav>
             )}
             <Logout />
