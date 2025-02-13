@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Container, Table, Button, Spinner, Modal, Form } from 'react-bootstrap';
+import { Container, Table, Button, Spinner, Modal, Form, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useMachines } from '@/hooks/useMachines';
 import { Machine } from '@/generated/graphql';
 import { useNavigate } from 'react-router';
@@ -97,7 +97,7 @@ export function MachineList() {
         }
       } else {
         const mch = await createMachine(omit(formData, 'locationId', 'machineLocationId'));
-        await createMachineLocation({ machineId: mch.id, locationId: formData.locationId });
+        await createMachineLocation({ machineId: mch.id, locationId: formData.locationId! });
       }
       setShowEditModal(false);
       setSelectedMachine(null);
@@ -190,9 +190,26 @@ export function MachineList() {
                 {machine.manufacturer?.name} {machine.machineType?.name}
               </td>
               <td>
-                <Button variant="link" className="p-0" onClick={() => handleItemsClick(machine)}>
-                  {machine.machineItems?.length || 0}
-                </Button>
+                {machine.machineItems && machine.machineItems.length > 0 ? (
+                  <OverlayTrigger
+                    placement="left"
+                    overlay={
+                      <Tooltip>
+                        {machine.machineItems.map((mi, index) => (
+                          <div key={mi?.id}>
+                            {mi?.item?.name} ({mi?.quantity}){mi?.setPrice && ` - $${mi?.setPrice.toFixed(2)}`}{' '}
+                            {mi?.item?.basePrice && ` ($${mi?.item?.basePrice.toFixed(2)})`}
+                            {index < (machine?.machineItems?.length ?? 0) - 1 && <hr className="my-1" />}
+                          </div>
+                        ))}
+                      </Tooltip>
+                    }
+                  >
+                    <span style={{ cursor: 'help', textDecoration: 'underline' }}>{machine.machineItems.length}</span>
+                  </OverlayTrigger>
+                ) : (
+                  0
+                )}
               </td>
               <td>
                 <div className="table-button-wrap">

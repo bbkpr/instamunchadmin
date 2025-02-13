@@ -24,7 +24,11 @@ export const client = new ApolloClient({
         fields: {
           machineLocations: {
             merge(existing = [], incoming: any[]) {
-              return [...existing, ...incoming];
+              const output = [...existing];
+              if (Array.isArray(incoming)) {
+                output.push(...incoming);
+              }
+              return output;
             }
           }
         }

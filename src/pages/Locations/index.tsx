@@ -40,7 +40,6 @@ export function Locations() {
   };
 
   const handleViewMachines = (location: Location) => {
-    console.log('handleViewMachines', location, machines);
     const locationMachines = machines.filter((machine) =>
       machine.machineLocations?.some((ml) => ml?.location?.id === location.id)
     );
