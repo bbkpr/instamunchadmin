@@ -11,6 +11,7 @@ import { Login } from '@/pages/Login';
 import { AuthWrapper } from '@/components/AuthWrapper';
 import { AuditLogTable } from '@/pages/AuditLogTable';
 import { UserSettings } from '@/pages/UserSettings';
+import { Items } from '@/pages/Items';
 
 const router = createBrowserRouter([
   {
@@ -36,6 +37,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Index />
+      },
+      {
+        path: 'items',
+        element: <Items />
       },
       {
         path: 'machines',

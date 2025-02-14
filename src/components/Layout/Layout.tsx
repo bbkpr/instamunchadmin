@@ -29,6 +29,9 @@ export function Layout({ children }: LayoutProps) {
                 <Nav.Link as={Link} to="/locations" active={location.pathname === '/locations'}>
                   Locations
                 </Nav.Link>
+                <Nav.Link as={Link} to="/items" active={location.pathname === '/items'}>
+                  Items
+                </Nav.Link>
                 {currentUser.role === 'ADMINISTRATOR' && (
                   <>
                     <Nav.Link as={Link} to="/users" active={location.pathname === '/users'}>
