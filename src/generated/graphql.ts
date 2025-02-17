@@ -32,6 +32,7 @@ export type AuditLog = {
   id: Scalars['ID']['output'];
   newValue?: Maybe<Scalars['String']['output']>;
   oldValue?: Maybe<Scalars['String']['output']>;
+  tenantId: Scalars['ID']['output'];
   user?: Maybe<User>;
 };
 
@@ -48,6 +49,7 @@ export type CreateItemInput = {
   basePrice: Scalars['Float']['input'];
   expirationPeriod: Scalars['Int']['input'];
   name: Scalars['String']['input'];
+  tenantId: Scalars['ID']['input'];
 };
 
 export type CreateItemMutationResponse = MutationResponse & {
@@ -67,6 +69,7 @@ export type CreateLocationInput = {
   country: Scalars['String']['input'];
   postalCode: Scalars['String']['input'];
   stateOrProvince: Scalars['String']['input'];
+  tenantId: Scalars['ID']['input'];
 };
 
 export type CreateLocationMutationResponse = MutationResponse & {
@@ -83,6 +86,7 @@ export type CreateMachineInput = {
   machineTypeId: Scalars['ID']['input'];
   manufacturerId: Scalars['ID']['input'];
   name: Scalars['String']['input'];
+  tenantId: Scalars['ID']['input'];
 };
 
 /** Assign an Item to a Machine */
@@ -92,6 +96,7 @@ export type CreateMachineItemInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   quantity: Scalars['Int']['input'];
   setPrice?: InputMaybe<Scalars['Float']['input']>;
+  tenantId: Scalars['ID']['input'];
 };
 
 export type CreateMachineItemMutationResponse = MutationResponse & {
@@ -108,6 +113,7 @@ export type CreateMachineLocationInput = {
   locationId: Scalars['ID']['input'];
   machineId: Scalars['ID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
+  tenantId: Scalars['ID']['input'];
 };
 
 export type CreateMachineLocationMutationResponse = MutationResponse & {
@@ -122,6 +128,7 @@ export type CreateMachineLocationMutationResponse = MutationResponse & {
 /** Create a Manufacturer */
 export type CreateMachineManufacturerInput = {
   name: Scalars['String']['input'];
+  tenantId: Scalars['ID']['input'];
 };
 
 export type CreateMachineManufacturerMutationResponse = MutationResponse & {
@@ -146,6 +153,7 @@ export type CreateMachineMutationResponse = MutationResponse & {
 export type CreateMachineTypeInput = {
   manufacturerId: Scalars['ID']['input'];
   name: Scalars['String']['input'];
+  tenantId: Scalars['ID']['input'];
 };
 
 export type CreateMachineTypeMutationResponse = MutationResponse & {
@@ -162,6 +170,7 @@ export type CreateUserInput = {
   name: Scalars['String']['input'];
   password: Scalars['String']['input'];
   role: Role;
+  tenantId: Scalars['ID']['input'];
 };
 
 export type CreateUserMutationResponse = MutationResponse & {
@@ -248,6 +257,7 @@ export type Item = {
   machineItems?: Maybe<Array<Maybe<MachineItem>>>;
   /** Name of the item */
   name: Scalars['String']['output'];
+  tenantId: Scalars['ID']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
 };
 
@@ -262,6 +272,7 @@ export type Location = {
   machineLocations?: Maybe<Array<Maybe<MachineLocation>>>;
   postalCode: Scalars['String']['output'];
   stateOrProvince: Scalars['String']['output'];
+  tenantId: Scalars['ID']['output'];
   updatedAt: Scalars['String']['output'];
 };
 
@@ -291,6 +302,7 @@ export type Machine = {
   machineType?: Maybe<MachineType>;
   manufacturer?: Maybe<MachineManufacturer>;
   name: Scalars['String']['output'];
+  tenantId: Scalars['ID']['output'];
   updatedAt?: Maybe<Scalars['String']['output']>;
 };
 
@@ -305,6 +317,7 @@ export type MachineItem = {
   name?: Maybe<Scalars['String']['output']>;
   quantity: Scalars['Int']['output'];
   setPrice?: Maybe<Scalars['Float']['output']>;
+  tenantId: Scalars['ID']['output'];
 };
 
 export type MachineLocation = {
@@ -317,6 +330,7 @@ export type MachineLocation = {
   machineId: Scalars['ID']['output'];
   /** Optional display name for this machine-location pairing */
   name?: Maybe<Scalars['String']['output']>;
+  tenantId: Scalars['ID']['output'];
   updatedAt: Scalars['String']['output'];
 };
 
@@ -327,6 +341,7 @@ export type MachineManufacturer = {
   machineTypes?: Maybe<Array<Maybe<MachineType>>>;
   machines?: Maybe<Array<Maybe<Machine>>>;
   name: Scalars['String']['output'];
+  tenantId: Scalars['ID']['output'];
   updatedAt: Scalars['String']['output'];
 };
 
@@ -338,6 +353,7 @@ export type MachineType = {
   manufacturer: MachineManufacturer;
   manufacturerId: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+  tenantId: Scalars['ID']['output'];
   updatedAt: Scalars['String']['output'];
 };
 
@@ -675,6 +691,7 @@ export type UpdateItemInput = {
   expirationPeriod?: InputMaybe<Scalars['Int']['input']>;
   id: Scalars['ID']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
+  tenantId: Scalars['ID']['input'];
 };
 
 export type UpdateItemMutationResponse = MutationResponse & {
@@ -695,6 +712,7 @@ export type UpdateLocationInput = {
   id: Scalars['ID']['input'];
   postalCode: Scalars['String']['input'];
   stateOrProvince?: InputMaybe<Scalars['String']['input']>;
+  tenantId: Scalars['ID']['input'];
 };
 
 export type UpdateLocationMutationResponse = MutationResponse & {
@@ -712,6 +730,7 @@ export type UpdateMachineInput = {
   machineTypeId?: InputMaybe<Scalars['ID']['input']>;
   manufacturerId?: InputMaybe<Scalars['ID']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  tenantId: Scalars['ID']['input'];
 };
 
 /** Update a MachineItem */
@@ -720,6 +739,7 @@ export type UpdateMachineItemInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   quantity?: InputMaybe<Scalars['Int']['input']>;
   setPrice?: InputMaybe<Scalars['Float']['input']>;
+  tenantId: Scalars['ID']['input'];
 };
 
 export type UpdateMachineItemMutationResponse = MutationResponse & {
@@ -734,6 +754,7 @@ export type UpdateMachineItemMutationResponse = MutationResponse & {
 export type UpdateMachineItemsInput = {
   itemIds: Array<Scalars['ID']['input']>;
   machineId: Scalars['ID']['input'];
+  tenantId: Scalars['ID']['input'];
 };
 
 export type UpdateMachineItemsMutationResponse = MutationResponse & {
@@ -751,6 +772,7 @@ export type UpdateMachineLocationInput = {
   locationId?: InputMaybe<Scalars['ID']['input']>;
   machineId?: InputMaybe<Scalars['ID']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  tenantId: Scalars['ID']['input'];
 };
 
 export type UpdateMachineLocationMutationResponse = MutationResponse & {
@@ -766,6 +788,7 @@ export type UpdateMachineLocationMutationResponse = MutationResponse & {
 export type UpdateMachineManufacturerInput = {
   id: Scalars['ID']['input'];
   name: Scalars['String']['input'];
+  tenantId: Scalars['ID']['input'];
 };
 
 export type UpdateMachineManufacturerMutationResponse = MutationResponse & {
@@ -791,6 +814,7 @@ export type UpdateMachineTypeInput = {
   id: Scalars['ID']['input'];
   manufacturerId?: InputMaybe<Scalars['ID']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
+  tenantId: Scalars['ID']['input'];
 };
 
 export type UpdateMachineTypeMutationResponse = MutationResponse & {
@@ -808,6 +832,7 @@ export type UpdateUserInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   password?: InputMaybe<Scalars['String']['input']>;
   role?: InputMaybe<Role>;
+  tenantId: Scalars['ID']['input'];
 };
 
 export type UpdateUserMutationResponse = MutationResponse & {
@@ -826,6 +851,7 @@ export type User = {
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
   role: Role;
+  tenantId: Scalars['ID']['output'];
   updatedAt: Scalars['String']['output'];
 };
 
@@ -1092,6 +1118,7 @@ export type AuditLogResolvers<
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   newValue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   oldValue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  tenantId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1306,6 +1333,7 @@ export type ItemResolvers<
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   machineItems?: Resolver<Maybe<Array<Maybe<ResolversTypes['MachineItem']>>>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  tenantId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1323,6 +1351,7 @@ export type LocationResolvers<
   machineLocations?: Resolver<Maybe<Array<Maybe<ResolversTypes['MachineLocation']>>>, ParentType, ContextType>;
   postalCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   stateOrProvince?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  tenantId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1351,6 +1380,7 @@ export type MachineResolvers<
   machineType?: Resolver<Maybe<ResolversTypes['MachineType']>, ParentType, ContextType>;
   manufacturer?: Resolver<Maybe<ResolversTypes['MachineManufacturer']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  tenantId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1367,6 +1397,7 @@ export type MachineItemResolvers<
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   quantity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   setPrice?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
+  tenantId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1381,6 +1412,7 @@ export type MachineLocationResolvers<
   machine?: Resolver<Maybe<ResolversTypes['Machine']>, ParentType, ContextType>;
   machineId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  tenantId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1394,6 +1426,7 @@ export type MachineManufacturerResolvers<
   machineTypes?: Resolver<Maybe<Array<Maybe<ResolversTypes['MachineType']>>>, ParentType, ContextType>;
   machines?: Resolver<Maybe<Array<Maybe<ResolversTypes['Machine']>>>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  tenantId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1408,6 +1441,7 @@ export type MachineTypeResolvers<
   manufacturer?: Resolver<ResolversTypes['MachineManufacturer'], ParentType, ContextType>;
   manufacturerId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  tenantId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1833,6 +1867,7 @@ export type UserResolvers<
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   role?: Resolver<ResolversTypes['Role'], ParentType, ContextType>;
+  tenantId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   updatedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
