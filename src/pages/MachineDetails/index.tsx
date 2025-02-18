@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router';
 import { Container, Row, Col, Card, Button, Table, Modal, Form, Spinner } from 'react-bootstrap';
 import { useMachine } from '@/hooks/useMachine';
 import { Item, MachineItem } from '@/generated/graphql';
+import { CashCollection } from '@/components/CashCollection';
 
 interface ItemFormData {
   itemId: string;
@@ -137,6 +138,40 @@ export function MachineDetails() {
               {/*    </div>*/}
               {/*  </div>*/}
               {/*)}*/}
+            </Card.Body>
+          </Card>
+
+          <Card>
+            <Card.Header className="d-flex justify-content-between align-items-center">
+              <h5 className="mb-0">Cash Management</h5>
+              <CashCollection machineId={machine.id} currentCash={machine.cashOnHand} onCollectionComplete={refetch} />
+            </Card.Header>
+            <Card.Body>
+              <h6>Recent Transactions</h6>
+              <Table responsive>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Method</th>
+                    <th>Amount</th>
+                    <th>Item</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {machine.transactions.map((transaction) => (
+                    <tr key={transaction.id}>
+                      <td>{new Date(transaction.createdAt).toLocaleString()}</td>
+                      <td>{formatEnumValue(transaction.type)}</td>
+                      <td>{formatEnumValue(transaction.method)}</td>
+                      <td>${transaction.amount.toFixed(2)}</td>
+                      <td>{transaction.item?.name || '-'}</td>
+                      <td>{transaction.notes || '-'}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
             </Card.Body>
           </Card>
         </Col>

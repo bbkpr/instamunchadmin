@@ -89,6 +89,15 @@ enum AuditAction {
   DELETE
 }
 
+type CashCollection {
+  id: ID!
+  machine: Machine!
+  user: User!
+  amount: Float!
+  notes: String
+  collectedAt: String!
+}
+
 type Item {
   id: ID!
   tenantId: ID!
@@ -147,6 +156,9 @@ type Machine {
   manufacturer: MachineManufacturer
   createdAt: String
   updatedAt: String
+  cashOnHand: Float!
+  transactions: [Transaction!]!
+  cashCollections: [CashCollection!]!
 }
 
 type Location {
@@ -180,6 +192,44 @@ type PaginatedAuditLogs {
   logs: [AuditLog!]!
   totalCount: Int!
   pageCount: Int!
+}
+
+enum PaymentMethod {
+  CASH
+  CREDIT_CARD
+}
+
+input RecordCashCollectionInput {
+  machineId: ID!
+  amount: Float!
+  notes: String
+}
+
+input RecordTransactionInput {
+  machineId: ID!
+  amount: Float!
+  method: PaymentMethod!
+  type: TransactionType!
+  itemId: String
+  notes: String
+}
+
+type Transaction {
+  id: ID!
+  machine: Machine!
+  amount: Float!
+  method: PaymentMethod!
+  type: TransactionType!
+  item: Item
+  user: User
+  notes: String
+  createdAt: String!
+}
+
+enum TransactionType {
+  SALE
+  COLLECTION
+  REFUND
 }
 
 type User {
@@ -408,6 +458,16 @@ type Query {
   getUsers: [User!]! @requirePermission(permissions: [READ_USERS])
   getUser(id: ID!): User @requirePermission(permissions: [READ_USERS])
   getUserPermissions(id: ID!): [String!]! @requirePermission(permissions: [READ_USERS])
+
+  """
+  Get all transactions for a specific machine
+  """
+  getMachineTransactions(machineId: ID!): [Transaction!]! @requirePermission(permissions: [READ_MACHINE_ITEMS])
+
+  """
+  Get cash collection records for a specific machine
+  """
+  getMachineCashCollections(machineId: ID!): [CashCollection!]! @requirePermission(permissions: [READ_MACHINE_ITEMS])
 }
 
 "Log in"
@@ -847,4 +907,8 @@ type Mutation {
   updateUser(input: UpdateUserInput!): UpdateUserMutationResponse! @requirePermission(permissions: [UPDATE_USERS])
   "Delete a User"
   deleteUser(id: ID!): DeleteUserMutationResponse! @requirePermission(permissions: [DELETE_USERS])
+
+  recordTransaction(input: RecordTransactionInput!): Transaction! @requirePermission(permissions: [UPDATE_USERS])
+  recordCashCollection(input: RecordCashCollectionInput!): CashCollection!
+    @requirePermission(permissions: [UPDATE_USERS])
 }

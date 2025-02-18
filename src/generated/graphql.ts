@@ -44,6 +44,16 @@ export type AuditLogFilter = {
   userId?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type CashCollection = {
+  __typename?: 'CashCollection';
+  amount: Scalars['Float']['output'];
+  collectedAt: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  machine: Machine;
+  notes?: Maybe<Scalars['String']['output']>;
+  user: User;
+};
+
 /** Create Item */
 export type CreateItemInput = {
   basePrice: Scalars['Float']['input'];
@@ -295,6 +305,8 @@ export type LoginResponse = MutationResponse & {
 
 export type Machine = {
   __typename?: 'Machine';
+  cashCollections: Array<CashCollection>;
+  cashOnHand: Scalars['Float']['output'];
   createdAt?: Maybe<Scalars['String']['output']>;
   id: Scalars['ID']['output'];
   machineItems?: Maybe<Array<Maybe<MachineItem>>>;
@@ -303,6 +315,7 @@ export type Machine = {
   manufacturer?: Maybe<MachineManufacturer>;
   name: Scalars['String']['output'];
   tenantId: Scalars['ID']['output'];
+  transactions: Array<Transaction>;
   updatedAt?: Maybe<Scalars['String']['output']>;
 };
 
@@ -393,6 +406,8 @@ export type Mutation = {
   deleteUser: DeleteUserMutationResponse;
   /** Log in and retrieve an auth token */
   login: LoginResponse;
+  recordCashCollection: CashCollection;
+  recordTransaction: Transaction;
   /** Update an existing Item */
   updateItem: UpdateItemMutationResponse;
   /** Update a Location */
@@ -481,6 +496,14 @@ export type MutationLoginArgs = {
   input: LoginInput;
 };
 
+export type MutationRecordCashCollectionArgs = {
+  input: RecordCashCollectionInput;
+};
+
+export type MutationRecordTransactionArgs = {
+  input: RecordTransactionInput;
+};
+
 export type MutationUpdateItemArgs = {
   input: UpdateItemInput;
 };
@@ -534,6 +557,11 @@ export type PaginatedAuditLogs = {
   pageCount: Scalars['Int']['output'];
   totalCount: Scalars['Int']['output'];
 };
+
+export enum PaymentMethod {
+  Cash = 'CASH',
+  CreditCard = 'CREDIT_CARD'
+}
 
 /** Auth Permissions */
 export enum Permission {
@@ -594,6 +622,8 @@ export type Query = {
   /** Get Locations with a Machine matching a name (case insensitive) */
   getLocationsByMachineName: Array<Location>;
   getMachine?: Maybe<Machine>;
+  /** Get cash collection records for a specific machine */
+  getMachineCashCollections: Array<CashCollection>;
   /** Get all MachineItems, from everywhere */
   getMachineItems?: Maybe<Array<Maybe<MachineItem>>>;
   /** Get all MachineLocations */
@@ -602,6 +632,8 @@ export type Query = {
   getMachineManufacturer?: Maybe<MachineManufacturer>;
   /** Get all MachineManufacturers */
   getMachineManufacturers: Array<MachineManufacturer>;
+  /** Get all transactions for a specific machine */
+  getMachineTransactions: Array<Transaction>;
   /** Get a MachineType by ID */
   getMachineType?: Maybe<MachineType>;
   /** Get all MachineTypes */
@@ -650,8 +682,16 @@ export type QueryGetMachineArgs = {
   machineId: Scalars['ID']['input'];
 };
 
+export type QueryGetMachineCashCollectionsArgs = {
+  machineId: Scalars['ID']['input'];
+};
+
 export type QueryGetMachineManufacturerArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type QueryGetMachineTransactionsArgs = {
+  machineId: Scalars['ID']['input'];
 };
 
 export type QueryGetMachineTypeArgs = {
@@ -678,11 +718,45 @@ export type QueryGetUserPermissionsArgs = {
   id: Scalars['ID']['input'];
 };
 
+export type RecordCashCollectionInput = {
+  amount: Scalars['Float']['input'];
+  machineId: Scalars['ID']['input'];
+  notes?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type RecordTransactionInput = {
+  amount: Scalars['Float']['input'];
+  itemId?: InputMaybe<Scalars['String']['input']>;
+  machineId: Scalars['ID']['input'];
+  method: PaymentMethod;
+  notes?: InputMaybe<Scalars['String']['input']>;
+  type: TransactionType;
+};
+
 /** Auth Roles */
 export enum Role {
   Administrator = 'ADMINISTRATOR',
   Operator = 'OPERATOR',
   Technician = 'TECHNICIAN'
+}
+
+export type Transaction = {
+  __typename?: 'Transaction';
+  amount: Scalars['Float']['output'];
+  createdAt: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  item?: Maybe<Item>;
+  machine: Machine;
+  method: PaymentMethod;
+  notes?: Maybe<Scalars['String']['output']>;
+  type: TransactionType;
+  user?: Maybe<User>;
+};
+
+export enum TransactionType {
+  Collection = 'COLLECTION',
+  Refund = 'REFUND',
+  Sale = 'SALE'
 }
 
 /** Update Item */
@@ -962,6 +1036,7 @@ export type ResolversTypes = {
   AuditLog: ResolverTypeWrapper<AuditLog>;
   AuditLogFilter: AuditLogFilter;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CashCollection: ResolverTypeWrapper<CashCollection>;
   CreateItemInput: CreateItemInput;
   CreateItemMutationResponse: ResolverTypeWrapper<CreateItemMutationResponse>;
   CreateLocationInput: CreateLocationInput;
@@ -1001,11 +1076,16 @@ export type ResolversTypes = {
   Mutation: ResolverTypeWrapper<{}>;
   MutationResponse: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['MutationResponse']>;
   PaginatedAuditLogs: ResolverTypeWrapper<PaginatedAuditLogs>;
+  PaymentMethod: PaymentMethod;
   Permission: Permission;
   PermissionOperator: PermissionOperator;
   Query: ResolverTypeWrapper<{}>;
+  RecordCashCollectionInput: RecordCashCollectionInput;
+  RecordTransactionInput: RecordTransactionInput;
   Role: Role;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  Transaction: ResolverTypeWrapper<Transaction>;
+  TransactionType: TransactionType;
   UpdateItemInput: UpdateItemInput;
   UpdateItemMutationResponse: ResolverTypeWrapper<UpdateItemMutationResponse>;
   UpdateLocationInput: UpdateLocationInput;
@@ -1032,6 +1112,7 @@ export type ResolversParentTypes = {
   AuditLog: AuditLog;
   AuditLogFilter: AuditLogFilter;
   Boolean: Scalars['Boolean']['output'];
+  CashCollection: CashCollection;
   CreateItemInput: CreateItemInput;
   CreateItemMutationResponse: CreateItemMutationResponse;
   CreateLocationInput: CreateLocationInput;
@@ -1072,7 +1153,10 @@ export type ResolversParentTypes = {
   MutationResponse: ResolversInterfaceTypes<ResolversParentTypes>['MutationResponse'];
   PaginatedAuditLogs: PaginatedAuditLogs;
   Query: {};
+  RecordCashCollectionInput: RecordCashCollectionInput;
+  RecordTransactionInput: RecordTransactionInput;
   String: Scalars['String']['output'];
+  Transaction: Transaction;
   UpdateItemInput: UpdateItemInput;
   UpdateItemMutationResponse: UpdateItemMutationResponse;
   UpdateLocationInput: UpdateLocationInput;
@@ -1120,6 +1204,19 @@ export type AuditLogResolvers<
   oldValue?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   tenantId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CashCollectionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['CashCollection'] = ResolversParentTypes['CashCollection']
+> = {
+  amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  collectedAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  machine?: Resolver<ResolversTypes['Machine'], ParentType, ContextType>;
+  notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  user?: Resolver<ResolversTypes['User'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1373,6 +1470,8 @@ export type MachineResolvers<
   ContextType = any,
   ParentType extends ResolversParentTypes['Machine'] = ResolversParentTypes['Machine']
 > = {
+  cashCollections?: Resolver<Array<ResolversTypes['CashCollection']>, ParentType, ContextType>;
+  cashOnHand?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   machineItems?: Resolver<Maybe<Array<Maybe<ResolversTypes['MachineItem']>>>, ParentType, ContextType>;
@@ -1381,6 +1480,7 @@ export type MachineResolvers<
   manufacturer?: Resolver<Maybe<ResolversTypes['MachineManufacturer']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   tenantId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  transactions?: Resolver<Array<ResolversTypes['Transaction']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -1547,6 +1647,18 @@ export type MutationResolvers<
     RequireFields<MutationDeleteUserArgs, 'id'>
   >;
   login?: Resolver<ResolversTypes['LoginResponse'], ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
+  recordCashCollection?: Resolver<
+    ResolversTypes['CashCollection'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationRecordCashCollectionArgs, 'input'>
+  >;
+  recordTransaction?: Resolver<
+    ResolversTypes['Transaction'],
+    ParentType,
+    ContextType,
+    RequireFields<MutationRecordTransactionArgs, 'input'>
+  >;
   updateItem?: Resolver<
     ResolversTypes['UpdateItemMutationResponse'],
     ParentType,
@@ -1695,6 +1807,12 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryGetMachineArgs, 'machineId'>
   >;
+  getMachineCashCollections?: Resolver<
+    Array<ResolversTypes['CashCollection']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetMachineCashCollectionsArgs, 'machineId'>
+  >;
   getMachineItems?: Resolver<Maybe<Array<Maybe<ResolversTypes['MachineItem']>>>, ParentType, ContextType>;
   getMachineLocations?: Resolver<Maybe<Array<ResolversTypes['MachineLocation']>>, ParentType, ContextType>;
   getMachineManufacturer?: Resolver<
@@ -1704,6 +1822,12 @@ export type QueryResolvers<
     RequireFields<QueryGetMachineManufacturerArgs, 'id'>
   >;
   getMachineManufacturers?: Resolver<Array<ResolversTypes['MachineManufacturer']>, ParentType, ContextType>;
+  getMachineTransactions?: Resolver<
+    Array<ResolversTypes['Transaction']>,
+    ParentType,
+    ContextType,
+    RequireFields<QueryGetMachineTransactionsArgs, 'machineId'>
+  >;
   getMachineType?: Resolver<
     Maybe<ResolversTypes['MachineType']>,
     ParentType,
@@ -1739,6 +1863,22 @@ export type QueryResolvers<
   >;
   getUsers?: Resolver<Array<ResolversTypes['User']>, ParentType, ContextType>;
   me?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+};
+
+export type TransactionResolvers<
+  ContextType = any,
+  ParentType extends ResolversParentTypes['Transaction'] = ResolversParentTypes['Transaction']
+> = {
+  amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  createdAt?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  item?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType>;
+  machine?: Resolver<ResolversTypes['Machine'], ParentType, ContextType>;
+  method?: Resolver<ResolversTypes['PaymentMethod'], ParentType, ContextType>;
+  notes?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['TransactionType'], ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type UpdateItemMutationResponseResolvers<
@@ -1874,6 +2014,7 @@ export type UserResolvers<
 
 export type Resolvers<ContextType = any> = {
   AuditLog?: AuditLogResolvers<ContextType>;
+  CashCollection?: CashCollectionResolvers<ContextType>;
   CreateItemMutationResponse?: CreateItemMutationResponseResolvers<ContextType>;
   CreateLocationMutationResponse?: CreateLocationMutationResponseResolvers<ContextType>;
   CreateMachineItemMutationResponse?: CreateMachineItemMutationResponseResolvers<ContextType>;
@@ -1902,6 +2043,7 @@ export type Resolvers<ContextType = any> = {
   MutationResponse?: MutationResponseResolvers<ContextType>;
   PaginatedAuditLogs?: PaginatedAuditLogsResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  Transaction?: TransactionResolvers<ContextType>;
   UpdateItemMutationResponse?: UpdateItemMutationResponseResolvers<ContextType>;
   UpdateLocationMutationResponse?: UpdateLocationMutationResponseResolvers<ContextType>;
   UpdateMachineItemMutationResponse?: UpdateMachineItemMutationResponseResolvers<ContextType>;
