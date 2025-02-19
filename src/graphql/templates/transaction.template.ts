@@ -1,4 +1,3 @@
-// src/graphql/templates/transaction.template.ts
 import { gql } from '@apollo/client';
 
 export const GET_MACHINE_TRANSACTIONS = gql`

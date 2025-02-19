@@ -49,7 +49,7 @@ export function useMachine(machineId: string) {
     return result.data.createMachineItem.machineItem;
   };
 
-  const updateMachineItem = async (input: { id: string; quantity: number; setPrice?: number }) => {
+  const updateMachineItem = async (input: { id: string; quantity: number; setPrice?: number; tenantId: string }) => {
     const result = await updateMachineItemMutation({
       variables: { input },
       refetchQueries: [
@@ -67,7 +67,7 @@ export function useMachine(machineId: string) {
     return result.data.updateMachineItem.machineItem;
   };
 
-  const updateMachineItems = async (machineId: string, items: { id: string; quantity: number }[]) => {
+  const updateMachineItems = async (machineId: string, items: { id: string; quantity: number; tenantId: string }[]) => {
     const result = await updateMachineItemsMutation({
       variables: { input: { machineId, items } },
       refetchQueries: [

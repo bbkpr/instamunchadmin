@@ -1,20 +1,21 @@
 import React, { useState } from 'react';
 import { Card, Button, Form, Modal } from 'react-bootstrap';
 import { useMutation } from '@apollo/client';
-import { RECORD_CASH_COLLECTION } from '../graphql/templates/transaction.template';
+import { GET_MACHINE_CASH_COLLECTIONS, RECORD_CASH_COLLECTION } from '../graphql/templates/transaction.template';
 
 interface CashCollectionProps {
   machineId: string;
   currentCash: number;
-  onCollectionComplete: () => void;
 }
 
-export function CashCollection({ machineId, currentCash, onCollectionComplete }: CashCollectionProps) {
+export function CashCollection({ machineId, currentCash }: CashCollectionProps) {
   const [showModal, setShowModal] = useState(false);
   const [amount, setAmount] = useState(currentCash);
   const [notes, setNotes] = useState('');
 
-  const [recordCollection] = useMutation(RECORD_CASH_COLLECTION);
+  const [recordCollection] = useMutation(RECORD_CASH_COLLECTION, {
+    refetchQueries: [GET_MACHINE_CASH_COLLECTIONS]
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +30,6 @@ export function CashCollection({ machineId, currentCash, onCollectionComplete }:
         }
       });
       setShowModal(false);
-      onCollectionComplete();
     } catch (error) {
       console.error('Failed to record collection:', error);
     }
@@ -37,8 +37,8 @@ export function CashCollection({ machineId, currentCash, onCollectionComplete }:
 
   return (
     <>
-      <Button variant="warning" onClick={() => setShowModal(true)} disabled={currentCash === 0}>
-        Collect Cash (${currentCash.toFixed(2)})
+      <Button variant="primary" onClick={() => setShowModal(true)} disabled={currentCash === 0}>
+        Collect Cash (${currentCash?.toFixed(2) ?? 0})
       </Button>
 
       <Modal show={showModal} onHide={() => setShowModal(false)}>

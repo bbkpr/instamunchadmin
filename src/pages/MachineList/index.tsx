@@ -214,7 +214,7 @@ export function MachineList() {
               <td>
                 <div className="table-button-wrap">
                   <Button
-                    variant="outline-primary"
+                    variant="primary"
                     size="sm"
                     className="me-2"
                     onClick={() => navigate(`/machines/${machine.id}`)}

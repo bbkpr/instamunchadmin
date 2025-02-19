@@ -145,7 +145,7 @@ export function Locations() {
               <td>
                 <div className="table-button-wrap">
                   <Button
-                    variant="outline-primary"
+                    variant="primary"
                     size="sm"
                     className="me-2"
                     aria-description="View Machines"

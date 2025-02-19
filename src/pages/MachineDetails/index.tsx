@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router';
 import { Container, Row, Col, Card, Button, Table, Modal, Form, Spinner } from 'react-bootstrap';
 import { useMachine } from '@/hooks/useMachine';
-import { Item, MachineItem } from '@/generated/graphql';
+import { Item, MachineItem, Transaction } from '@/generated/graphql';
 import { CashCollection } from '@/components/CashCollection';
+import { formatEnumValue } from '@/utils/formatters';
+import { useCashCollection } from '@/hooks/useCashCollection';
 
 interface ItemFormData {
   itemId: string;
   quantity: number;
+  tenantId: string;
   name?: string;
   setPrice?: number;
 }
@@ -35,7 +38,16 @@ export function MachineDetails() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [formData, setFormData] = useState<ItemFormData>({
     itemId: '',
-    quantity: 0
+    quantity: 0,
+    tenantId: ''
+  });
+
+  const [showCashCollectionModal, setShowCashCollectionModal] = useState(false);
+  const [collectionAmount, setCollectionAmount] = useState(machine?.cashOnHand ?? 0);
+  const [collectionNotes, setCollectionNotes] = useState('');
+  const { collectCash, loading: collectingCash } = useCashCollection(machine?.id, () => {
+    setShowCashCollectionModal(false);
+    setCollectionNotes('');
   });
 
   if (loading) {
@@ -59,7 +71,7 @@ export function MachineDetails() {
     try {
       await createMachineItem(formData);
       setShowAddItemModal(false);
-      setFormData({ itemId: '', quantity: 0, setPrice: undefined });
+      setFormData({ itemId: '', quantity: 0, tenantId: '', setPrice: undefined });
     } catch (err) {
       console.error('Error adding item:', err);
     }
@@ -70,12 +82,13 @@ export function MachineDetails() {
     try {
       await updateMachineItem({
         id: selectedItem.id,
+        tenantId: machine.tenantId,
         quantity: formData.quantity,
         setPrice: formData.setPrice
       });
       setShowEditItemModal(false);
       setSelectedItem(null);
-      setFormData({ itemId: '', quantity: 0, setPrice: undefined });
+      setFormData({ itemId: '', quantity: 0, tenantId: '', setPrice: undefined });
     } catch (err) {
       console.error('Error updating item:', err);
     }
@@ -121,57 +134,6 @@ export function MachineDetails() {
                 {machine.machineLocations[0]?.location.stateOrProvince}{' '}
                 {machine.machineLocations[0]?.location.postalCode} {machine.machineLocations[0]?.location.country}
               </p>
-
-              {/*{machine.images && machine.images.length > 0 && (*/}
-              {/*  <div className="mt-4">*/}
-              {/*    <h5>Machine Images</h5>*/}
-              {/*    <div className="d-flex flex-wrap gap-2">*/}
-              {/*      {machine.images.map((image, index) => (*/}
-              {/*        <img*/}
-              {/*          key={index}*/}
-              {/*          src={image.url}*/}
-              {/*          alt={`${machine.name} - ${index + 1}`}*/}
-              {/*          className="img-thumbnail"*/}
-              {/*          style={{ width: '150px', height: '150px', objectFit: 'cover' }}*/}
-              {/*        />*/}
-              {/*      ))}*/}
-              {/*    </div>*/}
-              {/*  </div>*/}
-              {/*)}*/}
-            </Card.Body>
-          </Card>
-
-          <Card>
-            <Card.Header className="d-flex justify-content-between align-items-center">
-              <h5 className="mb-0">Cash Management</h5>
-              <CashCollection machineId={machine.id} currentCash={machine.cashOnHand} onCollectionComplete={refetch} />
-            </Card.Header>
-            <Card.Body>
-              <h6>Recent Transactions</h6>
-              <Table responsive>
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Method</th>
-                    <th>Amount</th>
-                    <th>Item</th>
-                    <th>Notes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {machine.transactions.map((transaction) => (
-                    <tr key={transaction.id}>
-                      <td>{new Date(transaction.createdAt).toLocaleString()}</td>
-                      <td>{formatEnumValue(transaction.type)}</td>
-                      <td>{formatEnumValue(transaction.method)}</td>
-                      <td>${transaction.amount.toFixed(2)}</td>
-                      <td>{transaction.item?.name || '-'}</td>
-                      <td>{transaction.notes || '-'}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
             </Card.Body>
           </Card>
         </Col>
@@ -179,7 +141,7 @@ export function MachineDetails() {
           <Card>
             <Card.Header className="d-flex justify-content-between align-items-center">
               <h5 className="mb-0">Items</h5>
-              <Button variant="primary" size="sm" onClick={() => setShowAddItemModal(true)}>
+              <Button variant="primary" onClick={() => setShowAddItemModal(true)}>
                 Add Item
               </Button>
             </Card.Header>
@@ -212,7 +174,8 @@ export function MachineDetails() {
                               setFormData({
                                 itemId: machineItem.item!.id,
                                 setPrice: machineItem.setPrice!,
-                                quantity: machineItem.quantity
+                                quantity: machineItem.quantity,
+                                tenantId: machine.tenantId
                               });
                               setShowEditItemModal(true);
                             }}
@@ -242,6 +205,46 @@ export function MachineDetails() {
                       </td>
                     </tr>
                   )}
+                </tbody>
+              </Table>
+            </Card.Body>
+          </Card>
+          <br />
+          <Card>
+            <Card.Header className="d-flex justify-content-between align-items-center">
+              <h5 className="mb-0">Cash Management</h5>
+              <Button
+                variant="primary"
+                onClick={() => setShowCashCollectionModal(true)}
+                disabled={machine.cashOnHand === 0}
+              >
+                Collect Cash (${machine.cashOnHand?.toFixed(2) ?? 0})
+              </Button>
+            </Card.Header>
+            <Card.Body>
+              <h6>Recent Transactions</h6>
+              <Table responsive>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Method</th>
+                    <th>Amount</th>
+                    <th>Item</th>
+                    <th>Notes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {machine.transactions?.map((transaction: Transaction) => (
+                    <tr key={transaction.id}>
+                      <td>{new Date(transaction.createdAt).toLocaleString()}</td>
+                      <td>{formatEnumValue(transaction.type)}</td>
+                      <td>{formatEnumValue(transaction.method)}</td>
+                      <td>${transaction.amount.toFixed(2)}</td>
+                      <td>{transaction.item?.name || '-'}</td>
+                      <td>{transaction.notes || '-'}</td>
+                    </tr>
+                  ))}
                 </tbody>
               </Table>
             </Card.Body>
@@ -367,6 +370,54 @@ export function MachineDetails() {
             Remove
           </Button>
         </Modal.Footer>
+      </Modal>
+
+      {/* Cash Collection Modal */}
+      <Modal show={showCashCollectionModal} onHide={() => setShowCashCollectionModal(false)}>
+        <Form
+          onSubmit={async (e) => {
+            e.preventDefault();
+            try {
+              await collectCash(collectionAmount, collectionNotes);
+            } catch (err) {
+              console.error('Error collecting cash:', err);
+            }
+          }}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Record Cash Collection</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form.Group className="mb-3">
+              <Form.Label>Amount to Collect</Form.Label>
+              <Form.Control
+                type="number"
+                step="0.01"
+                value={collectionAmount}
+                onChange={(e) => setCollectionAmount(parseFloat(e.target.value))}
+                max={machine.cashOnHand}
+                required
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Notes</Form.Label>
+              <Form.Control
+                as="textarea"
+                value={collectionNotes}
+                onChange={(e) => setCollectionNotes(e.target.value)}
+                placeholder="Optional collection notes"
+              />
+            </Form.Group>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowCashCollectionModal(false)}>
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit" disabled={collectingCash}>
+              {collectingCash ? 'Recording...' : 'Record Collection'}
+            </Button>
+          </Modal.Footer>
+        </Form>
       </Modal>
     </Container>
   );

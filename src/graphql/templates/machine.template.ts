@@ -9,6 +9,7 @@ export const CREATE_MACHINE = gql`
       machine {
         id
         name
+        tenantId
         machineType {
           id
           name
@@ -33,6 +34,7 @@ export const GET_MACHINE = gql`
       name
       createdAt
       updatedAt
+      tenantId
       machineType {
         id
         name
@@ -77,6 +79,7 @@ export const GET_MACHINES = gql`
       name
       createdAt
       updatedAt
+      tenantId
       machineType {
         id
         name
@@ -133,6 +136,7 @@ export const UPDATE_MACHINE = gql`
         name
         createdAt
         updatedAt
+        tenantId
         machineItems {
           id
           name

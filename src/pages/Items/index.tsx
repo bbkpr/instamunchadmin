@@ -134,7 +134,7 @@ export function Items() {
               <td>
                 <div className="d-flex gap-2">
                   <Button variant="outline-primary" size="sm" onClick={() => handleEditClick(item)}>
-                    Edit
+                    ✏
                   </Button>
                   <Button
                     variant="outline-danger"
@@ -145,7 +145,7 @@ export function Items() {
                     }}
                     disabled={!(item.machineItems && item.machineItems.length > 0)}
                   >
-                    Delete
+                    ❌
                   </Button>
                 </div>
               </td>
