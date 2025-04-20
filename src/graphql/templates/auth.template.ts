@@ -10,6 +10,7 @@ export const LOGIN = gql`
       token
       user {
         id
+        tenantId
         email
         name
         role

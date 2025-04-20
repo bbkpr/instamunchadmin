@@ -54,6 +54,7 @@ export function Locations() {
       if (selectedLocation) {
         await updateLocation({
           id: selectedLocation.id,
+          tenantId: selectedLocation.tenantId,
           ...formData
         });
       } else {
@@ -145,7 +146,7 @@ export function Locations() {
               <td>
                 <div className="table-button-wrap">
                   <Button
-                    variant="primary"
+                    variant="outline-primary"
                     size="sm"
                     className="me-2"
                     aria-description="View Machines"

@@ -8,15 +8,18 @@ export const CREATE_MACHINE_MANUFACTURER = gql`
       message
       manufacturer {
         id
+        tenantId
         name
         createdAt
         updatedAt
         machines {
           id
+          tenantId
           name
         }
         machineTypes {
           id
+          tenantId
           name
         }
       }
@@ -31,6 +34,7 @@ export const GET_MACHINE_MANUFACTURERS = gql`
       name
       machines {
         id
+        tenantId
         name
         createdAt
         updatedAt
@@ -47,15 +51,18 @@ export const UPDATE_MACHINE_MANUFACTURER = gql`
       message
       manufacturer {
         id
+        tenantId
         name
         createdAt
         updatedAt
         machines {
           id
+          tenantId
           name
         }
         machineTypes {
           id
+          tenantId
           name
         }
       }

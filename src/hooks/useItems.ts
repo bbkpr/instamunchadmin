@@ -12,11 +12,13 @@ import {
   UPDATE_MACHINE_ITEMS
 } from '@/graphql/templates/machineItem.template';
 import { Item } from '@/generated/graphql';
+import { useUsers } from './useUsers';
 
 interface CreateItemData {
   name: string;
   basePrice: number;
   expirationPeriod: number;
+  tenantId?: string;
 }
 
 interface UpdateItemData extends Partial<CreateItemData> {
@@ -28,9 +30,11 @@ interface CreateMachineItemData {
   itemId: string;
   name?: string;
   quantity: number;
+  tenantId?: string;
 }
 
 export function useItems() {
+  const { currentUser } = useUsers();
   // Queries
   const {
     data: itemsData,
@@ -51,8 +55,18 @@ export function useItems() {
   // Item operations
   const createItem = async (input: CreateItemData) => {
     try {
+      // Ensure tenantId is set from current user
+      const itemInput = {
+        ...input,
+        tenantId: input.tenantId || currentUser?.tenantId
+      };
+
+      if (!itemInput.tenantId) {
+        throw new Error('Cannot create item: missing tenant ID');
+      }
+
       const result = await createItemMutation({
-        variables: { input },
+        variables: { input: itemInput },
         refetchQueries: [{ query: GET_ITEMS }]
       });
 
@@ -68,8 +82,18 @@ export function useItems() {
 
   const updateItem = async (input: UpdateItemData) => {
     try {
+      // Ensure tenantId is set from current user if not provided
+      const itemInput = {
+        ...input,
+        tenantId: input.tenantId || currentUser?.tenantId
+      };
+
+      if (!itemInput.tenantId) {
+        throw new Error('Cannot update item: missing tenant ID');
+      }
+
       const result = await updateItemMutation({
-        variables: { input },
+        variables: { input: itemInput },
         refetchQueries: [{ query: GET_ITEMS }]
       });
 
@@ -110,8 +134,18 @@ export function useItems() {
 
   const createMachineItem = async (input: CreateMachineItemData) => {
     try {
+      // Ensure tenantId is set from current user if not provided
+      const machineItemInput = {
+        ...input,
+        tenantId: input.tenantId || currentUser?.tenantId
+      };
+
+      if (!machineItemInput.tenantId) {
+        throw new Error('Cannot create machine item: missing tenant ID');
+      }
+
       const result = await createMachineItemMutation({
-        variables: { input },
+        variables: { input: machineItemInput },
         refetchQueries: [
           { query: GET_ITEMS },
           { query: GET_ITEMS_BY_MACHINE, variables: { machineId: input.machineId } }
@@ -130,8 +164,15 @@ export function useItems() {
 
   const updateMachineItems = async (machineId: string, itemIds: string[]) => {
     try {
+      // Ensure tenantId is added from current user
+      const tenantId = currentUser?.tenantId;
+
+      if (!tenantId) {
+        throw new Error('Cannot update machine items: missing tenant ID');
+      }
+
       const result = await updateMachineItemsMutation({
-        variables: { input: { machineId, itemIds } },
+        variables: { input: { machineId, itemIds, tenantId } },
         refetchQueries: [{ query: GET_ITEMS }, { query: GET_ITEMS_BY_MACHINE, variables: { machineId } }]
       });
 

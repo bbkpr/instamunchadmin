@@ -18,6 +18,7 @@ interface MachineFormData {
   machineTypeId: string;
   manufacturerId: string;
   name: string;
+  tenantId: string;
 }
 
 export function MachineList() {
@@ -46,7 +47,8 @@ export function MachineList() {
     machineLocationId: '',
     machineTypeId: '',
     manufacturerId: '',
-    name: ''
+    name: '',
+    tenantId: ''
   });
 
   const handleEditClick = (machine: Machine) => {
@@ -56,7 +58,8 @@ export function MachineList() {
       machineLocationId: machine.machineLocations?.[0]?.id,
       machineTypeId: machine.machineType!.id,
       manufacturerId: machine.manufacturer!.id,
-      name: machine.name
+      name: machine.name,
+      tenantId: machine.tenantId!
     });
     setShowEditModal(true);
   };
@@ -92,7 +95,8 @@ export function MachineList() {
           await updateMachineLocation({
             id: formData.machineLocationId,
             machineId: selectedMachine.id,
-            locationId: formData.locationId
+            locationId: formData.locationId,
+            tenantId: selectedMachine.tenantId
           });
         }
       } else {
@@ -106,7 +110,8 @@ export function MachineList() {
         locationId: '',
         machineLocationId: '',
         machineTypeId: '',
-        manufacturerId: ''
+        manufacturerId: '',
+        tenantId: ''
       });
     } catch (err) {
       console.error('Error saving machine:', err);
@@ -163,7 +168,8 @@ export function MachineList() {
               machineTypeId: '',
               manufacturerId: '',
               machineLocationId: '',
-              locationId: ''
+              locationId: '',
+              tenantId: ''
             }));
           }}
         >

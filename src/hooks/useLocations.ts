@@ -18,6 +18,7 @@ export interface LocationFormData {
 
 export interface UpdateLocationData extends LocationFormData {
   id: string;
+  tenantId: string;
 }
 
 export function useLocations() {

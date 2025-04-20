@@ -1,24 +1,38 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Table, Button, Modal, Form, Spinner, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { useItems } from '@/hooks/useItems';
 import { Item } from '@/generated/graphql';
+import { useUsers } from '@/hooks/useUsers';
 
 interface ItemFormData {
   name: string;
   basePrice: number;
   expirationPeriod: number;
+  tenantId: string;
 }
 
 export function Items() {
   const { items, loading, error, createItem, updateItem, deleteItem } = useItems();
+  const { currentUser } = useUsers();
   const [showEditModal, setShowEditModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [formData, setFormData] = useState<ItemFormData>({
     name: '',
     basePrice: 0,
-    expirationPeriod: 90
+    expirationPeriod: 90,
+    tenantId: ''
   });
+
+  // Set tenantId whenever currentUser changes
+  useEffect(() => {
+    if (currentUser?.tenantId) {
+      setFormData((prev) => ({
+        ...prev,
+        tenantId: currentUser.tenantId
+      }));
+    }
+  }, [currentUser]);
 
   if (loading) {
     return (
@@ -41,13 +55,23 @@ export function Items() {
     setFormData({
       name: item.name,
       basePrice: item.basePrice || 0,
-      expirationPeriod: item.expirationPeriod || 90
+      expirationPeriod: item.expirationPeriod || 90,
+      tenantId: item.tenantId
     });
     setShowEditModal(true);
   };
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Ensure tenantId is set
+    if (!formData.tenantId && currentUser?.tenantId) {
+      setFormData((prev) => ({
+        ...prev,
+        tenantId: currentUser.tenantId
+      }));
+    }
+
     try {
       if (selectedItem) {
         await updateItem({
@@ -62,7 +86,8 @@ export function Items() {
       setFormData({
         name: '',
         basePrice: 0,
-        expirationPeriod: 180
+        expirationPeriod: 180,
+        tenantId: currentUser?.tenantId || ''
       });
     } catch (err) {
       console.error('Error saving item:', err);

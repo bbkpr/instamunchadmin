@@ -5,6 +5,7 @@ export const GET_AUDIT_LOGS = gql`
     getAuditLogs(page: $page, pageSize: $pageSize, sortBy: $sortBy, sortOrder: $sortOrder, filter: $filter) {
       logs {
         id
+        tenantId
         entityType
         entityId
         action

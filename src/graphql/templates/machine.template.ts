@@ -12,12 +12,14 @@ export const CREATE_MACHINE = gql`
         tenantId
         machineType {
           id
+          tenantId
           name
           createdAt
           updatedAt
         }
         manufacturer {
           id
+          tenantId
           name
           createdAt
           updatedAt
@@ -37,19 +39,23 @@ export const GET_MACHINE = gql`
       tenantId
       machineType {
         id
+        tenantId
         name
       }
       manufacturer {
         id
+        tenantId
         name
       }
       machineItems {
         id
+        tenantId
         name
         quantity
         setPrice
         item {
           id
+          tenantId
           name
           basePrice
           expirationPeriod
@@ -57,6 +63,7 @@ export const GET_MACHINE = gql`
       }
       machineLocations {
         id
+        tenantId
         name
         location {
           id
@@ -82,23 +89,27 @@ export const GET_MACHINES = gql`
       tenantId
       machineType {
         id
+        tenantId
         name
         createdAt
         updatedAt
       }
       manufacturer {
         id
+        tenantId
         name
         createdAt
         updatedAt
       }
       machineItems {
         id
+        tenantId
         name
         quantity
         setPrice
         item {
           id
+          tenantId
           name
           basePrice
           expirationPeriod
@@ -108,9 +119,11 @@ export const GET_MACHINES = gql`
       }
       machineLocations {
         id
+        tenantId
         name
         location {
           id
+          tenantId
           address1
           address2
           city
@@ -133,12 +146,13 @@ export const UPDATE_MACHINE = gql`
       message
       machine {
         id
+        tenantId
         name
         createdAt
         updatedAt
-        tenantId
         machineItems {
           id
+          tenantId
           name
           quantity
           setPrice
@@ -146,6 +160,7 @@ export const UPDATE_MACHINE = gql`
           itemId
           item {
             id
+            tenantId
             name
             basePrice
             createdAt
@@ -154,11 +169,13 @@ export const UPDATE_MACHINE = gql`
         }
         machineLocations {
           id
+          tenantId
           name
           machineId
           locationId
           location {
             id
+            tenantId
             address1
             address2
             city
@@ -171,6 +188,7 @@ export const UPDATE_MACHINE = gql`
         }
         machineType {
           id
+          tenantId
           name
           createdAt
           updatedAt
@@ -178,6 +196,7 @@ export const UPDATE_MACHINE = gql`
         }
         manufacturer {
           id
+          tenantId
           name
           createdAt
           updatedAt

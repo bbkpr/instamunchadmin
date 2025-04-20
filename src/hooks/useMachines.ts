@@ -119,7 +119,12 @@ export function useMachines() {
     return result.data.createMachineLocation.machineLocation;
   };
 
-  const updateMachineLocation = async (input: { id: string; machineId: string; locationId: string }) => {
+  const updateMachineLocation = async (input: {
+    id: string;
+    machineId: string;
+    locationId: string;
+    tenantId: string;
+  }) => {
     const result = await updateMachineLocationMutation({
       variables: { input },
       refetchQueries: [{ query: GET_MACHINES }]

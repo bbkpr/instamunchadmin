@@ -8,12 +8,14 @@ export const CREATE_MACHINE_ITEM = gql`
       message
       machineItem {
         id
+        tenantId
         name
         quantity
         setPrice
         machineId
         machine {
           id
+          tenantId
           name
           createdAt
           updatedAt
@@ -21,6 +23,7 @@ export const CREATE_MACHINE_ITEM = gql`
         itemId
         item {
           id
+          tenantId
           name
           basePrice
           expirationPeriod
@@ -50,12 +53,14 @@ export const UPDATE_MACHINE_ITEM = gql`
       message
       machineItem {
         id
+        tenantId
         name
         quantity
         setPrice
         itemId
         item {
           id
+          tenantId
           name
           basePrice
           expirationPeriod
@@ -73,16 +78,19 @@ export const UPDATE_MACHINE_ITEMS = gql`
       message
       machineItems {
         id
+        tenantId
         name
         quantity
         machineId
         machine {
           id
+          tenantId
           name
         }
         itemId
         item {
           id
+          tenantId
           name
           basePrice
           expirationPeriod

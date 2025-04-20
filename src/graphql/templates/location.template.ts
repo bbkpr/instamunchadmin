@@ -35,6 +35,7 @@ export const GET_LOCATIONS = gql`
   query GetLocations {
     getLocations {
       id
+      tenantId
       address1
       address2
       city
@@ -45,10 +46,12 @@ export const GET_LOCATIONS = gql`
       updatedAt
       machineLocations {
         id
+        tenantId
         name
         machineId
         machine {
           id
+          tenantId
           name
           createdAt
           updatedAt
@@ -69,6 +72,7 @@ export const UPDATE_LOCATION = gql`
       message
       location {
         id
+        tenantId
         address1
         address2
         city
@@ -79,9 +83,11 @@ export const UPDATE_LOCATION = gql`
         updatedAt
         machineLocations {
           id
+          tenantId
           name
           machine {
             id
+            tenantId
             name
           }
         }

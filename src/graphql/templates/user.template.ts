@@ -4,6 +4,7 @@ export const GET_USERS = gql`
   query GetUsers {
     getUsers {
       id
+      tenantId
       email
       name
       role
@@ -17,6 +18,7 @@ export const GET_ME = gql`
   query GetMe {
     me {
       id
+      tenantId
       name
       email
       role
@@ -34,6 +36,7 @@ export const CREATE_USER = gql`
       message
       user {
         id
+        tenantId
         email
         name
         role
@@ -50,6 +53,7 @@ export const UPDATE_USER = gql`
       message
       user {
         id
+        tenantId
         email
         name
         role

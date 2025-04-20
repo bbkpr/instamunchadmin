@@ -8,10 +8,12 @@ export const CREATE_MACHINE_TYPE = gql`
       message
       machineType {
         id
+        tenantId
         name
         manufacturerId
         manufacturer {
           id
+          tenantId
           name
         }
       }
@@ -23,11 +25,13 @@ export const GET_MACHINE_TYPES = gql`
   query GetMachineTypes {
     getMachineTypes {
       id
+      tenantId
       name
       createdAt
       updatedAt
       machines {
         id
+        tenantId
         name
         createdAt
         updatedAt
@@ -35,6 +39,7 @@ export const GET_MACHINE_TYPES = gql`
       manufacturerId
       manufacturer {
         id
+        tenantId
         name
         createdAt
         updatedAt
@@ -51,10 +56,12 @@ export const UPDATE_MACHINE_TYPE = gql`
       message
       machineType {
         id
+        tenantId
         name
         manufacturerId
         manufacturer {
           id
+          tenantId
           name
         }
       }
